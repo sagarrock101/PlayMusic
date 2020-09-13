@@ -1,29 +1,31 @@
 package com.sagaRock101.playmusic.ui.fragment
 
-import android.content.Context
 import android.content.pm.PackageManager
-import android.database.Cursor
-import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.sagaRock101.playmusic.databinding.FragmentParentTabBinding
-import com.sagaRock101.playmusic.model.AudioModel
-import timber.log.Timber
-import java.util.jar.Manifest
+import com.sagaRock101.playmusic.ui.viewModel.MyViewModelFactory
+import com.sagaRock101.playmusic.ui.viewModel.SongViewModel
+import com.sagaRock101.playmusic.utils.Utils
 
 class ParentTabFragment : Fragment() {
     val MY_PERMISSION_REQUEST = 1
     val TAG = this.javaClass.name
-
+    lateinit var viewModel: SongViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        Timber.e("Files length: ${getAllAudioFromDevice(context!!)!!.size}")
+        viewModel = ViewModelProvider(this, MyViewModelFactory(context!!)).get(SongViewModel::class.java)
         if (ContextCompat.checkSelfPermission(
                 activity!!,
                 android.Manifest.permission.READ_EXTERNAL_STORAGE
@@ -35,8 +37,29 @@ class ParentTabFragment : Fragment() {
                 MY_PERMISSION_REQUEST
             )
         } else {
-            readMusic()
+            viewModel.getSongs()
+            songsObserver()
         }
+    }
+
+    private fun songsObserver() {
+        viewModel.songsLD.observe(this, Observer { songs ->
+            if (!songs.isNullOrEmpty()) {
+                Utils.showToast(requireContext(), "songs")
+                for(song in songs) {
+                    Log.e(TAG, "${song.title}")
+                }
+            }
+        })
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val binding = FragmentParentTabBinding.inflate(inflater)
+        return binding.root
     }
 
     override fun onRequestPermissionsResult(
@@ -47,7 +70,7 @@ class ParentTabFragment : Fragment() {
         Toast.makeText(context!!, "$requestCode ", Toast.LENGTH_SHORT)
             .show()
         when (requestCode) {
-            MY_PERMISSION_REQUEST-> {
+            MY_PERMISSION_REQUEST -> {
                 Toast.makeText(context!!, "permission granted ", Toast.LENGTH_SHORT)
                     .show()
                 if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -69,9 +92,7 @@ class ParentTabFragment : Fragment() {
         )
         var cursor = contentResolver.query(songUri, projection, null, null, null)
 
-
-
-        if (cursor != null && cursor.moveToFirst() ) {
+        if (cursor != null && cursor.moveToFirst()) {
             var songTitle = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)
 
             do {
@@ -83,51 +104,5 @@ class ParentTabFragment : Fragment() {
         cursor!!.close()
     }
 
-    private val binding by viewBinding(FragmentParentTabBinding::bind)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
-
-    private fun getAllAudioFromDevice(context: Context): List<AudioModel>? {
-
-        Toast.makeText(context, "check", Toast.LENGTH_SHORT)
-            .show()
-        val tempAudioList: MutableList<AudioModel> = ArrayList()
-        val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-        val projection = arrayOf(
-            MediaStore.Audio.AudioColumns.DATA,
-            MediaStore.Audio.AudioColumns.TITLE,
-            MediaStore.Audio.AudioColumns.ALBUM,
-            MediaStore.Audio.ArtistColumns.ARTIST
-        )
-        val c: Cursor? = context.contentResolver.query(
-            uri,
-            projection,
-            MediaStore.Audio.Media.DATA + " like ? ",
-            arrayOf("%music%"),
-            null
-        )
-
-        if (c != null) {
-
-            while (c.moveToNext()) {
-                val audioModel = AudioModel()
-                val path: String = c.getString(0)
-                val name: String = c.getString(1)
-                val album: String = c.getString(2)
-                val artist: String = c.getString(3)
-                audioModel.setaName(name)
-                audioModel.setaAlbum(album)
-                audioModel.setaArtist(artist)
-                audioModel.setaPath(path)
-                Log.e("Name :$name", " Album :$album")
-                Log.e("Path :$path", " Artist :$artist")
-                tempAudioList.add(audioModel)
-            }
-            c.close()
-        }
-        return tempAudioList
-    }
 }

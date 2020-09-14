@@ -1,4 +1,4 @@
-package com.sagaRock101.playmusic.ui.repo
+package com.sagaRock101.playmusic.repo
 
 import android.content.ContentResolver
 import android.content.Context

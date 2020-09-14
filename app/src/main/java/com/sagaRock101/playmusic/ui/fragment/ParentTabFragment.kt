@@ -1,5 +1,6 @@
 package com.sagaRock101.playmusic.ui.fragment
 
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.MediaStore
@@ -12,20 +13,25 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import com.sagaRock101.playmusic.MyApplication
 import com.sagaRock101.playmusic.databinding.FragmentParentTabBinding
-import com.sagaRock101.playmusic.ui.viewModel.MyViewModelFactory
-import com.sagaRock101.playmusic.ui.viewModel.SongViewModel
 import com.sagaRock101.playmusic.utils.Utils
+import com.sagaRock101.playmusic.viewModel.MyViewModelFactory
+import com.sagaRock101.playmusic.viewModel.SongViewModel
+import javax.inject.Inject
 
 class ParentTabFragment : Fragment() {
     val MY_PERMISSION_REQUEST = 1
     val TAG = this.javaClass.name
+
+    @Inject
     lateinit var viewModel: SongViewModel
+
+    @Inject
+    lateinit var viewModelFactory: MyViewModelFactory
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        Timber.e("Files length: ${getAllAudioFromDevice(context!!)!!.size}")
-        viewModel = ViewModelProvider(this, MyViewModelFactory(context!!)).get(SongViewModel::class.java)
         if (ContextCompat.checkSelfPermission(
                 activity!!,
                 android.Manifest.permission.READ_EXTERNAL_STORAGE
@@ -46,7 +52,7 @@ class ParentTabFragment : Fragment() {
         viewModel.songsLD.observe(this, Observer { songs ->
             if (!songs.isNullOrEmpty()) {
                 Utils.showToast(requireContext(), "songs")
-                for(song in songs) {
+                for (song in songs) {
                     Log.e(TAG, "${song.title}")
                 }
             }
@@ -102,6 +108,11 @@ class ParentTabFragment : Fragment() {
         }
 
         cursor!!.close()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (activity!!.application as MyApplication).appComponent.inject(this)
     }
 
 

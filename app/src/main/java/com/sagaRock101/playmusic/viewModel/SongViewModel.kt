@@ -1,20 +1,22 @@
-package com.sagaRock101.playmusic.ui.viewModel
+package com.sagaRock101.playmusic.viewModel
 
-import android.content.Context
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.sagaRock101.playmusic.model.Song
-import com.sagaRock101.playmusic.ui.repo.SongsRepo
-import com.sagaRock101.playmusic.ui.repo.SongsRepoImpl
+import com.sagaRock101.playmusic.repo.SongsRepoImpl
 import com.sagaRock101.playmusic.utils.CoroutineViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class SongViewModel(
-    ctx: Context
-) : CoroutineViewModel(Dispatchers.Main) {
-    var songsRepo: SongsRepo = SongsRepoImpl(ctx)
+@Singleton
+class SongViewModel @Inject constructor(application: Application) : CoroutineViewModel(Dispatchers.Main) {
+
+    @Inject
+    lateinit var songsRepo: SongsRepoImpl
 
     private val _songsMLD = MutableLiveData<List<Song>>()
     val songsLD: LiveData<List<Song>> = _songsMLD

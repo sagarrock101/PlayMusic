@@ -15,12 +15,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.sagaRock101.playmusic.MyApplication
 import com.sagaRock101.playmusic.databinding.FragmentParentTabBinding
+import com.sagaRock101.playmusic.model.Song
+import com.sagaRock101.playmusic.ui.adapter.SongAdapter
 import com.sagaRock101.playmusic.utils.Utils
 import com.sagaRock101.playmusic.viewModel.MyViewModelFactory
 import com.sagaRock101.playmusic.viewModel.SongViewModel
 import javax.inject.Inject
 
 class ParentTabFragment : Fragment() {
+    private lateinit var binding: FragmentParentTabBinding
     val MY_PERMISSION_REQUEST = 1
     val TAG = this.javaClass.name
 
@@ -44,7 +47,6 @@ class ParentTabFragment : Fragment() {
             )
         } else {
             viewModel.getSongs()
-            songsObserver()
         }
     }
 
@@ -55,6 +57,10 @@ class ParentTabFragment : Fragment() {
                 for (song in songs) {
                     Log.e(TAG, "${song.title}")
                 }
+                var adapter = SongAdapter()
+                adapter.setItems(songs as MutableList<Song>)
+                binding.rvSongs.adapter = adapter
+
             }
         })
     }
@@ -64,7 +70,8 @@ class ParentTabFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentParentTabBinding.inflate(inflater)
+        binding = FragmentParentTabBinding.inflate(inflater)
+        songsObserver()
         return binding.root
     }
 

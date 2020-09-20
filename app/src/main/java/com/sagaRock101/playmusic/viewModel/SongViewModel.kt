@@ -13,7 +13,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SongViewModel @Inject constructor(application: Application) : CoroutineViewModel(Dispatchers.Main) {
+class SongViewModel @Inject constructor(application: Application) :
+    CoroutineViewModel(Dispatchers.Main) {
 
     @Inject
     lateinit var songsRepo: SongsRepoImpl

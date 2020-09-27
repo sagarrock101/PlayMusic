@@ -3,6 +3,7 @@ package com.sagaRock101.playmusic.di
 import android.app.Application
 import android.content.Context
 import com.sagaRock101.playmusic.di.module.AppModule
+import com.sagaRock101.playmusic.ui.fragment.ListOfSongsFragment
 import com.sagaRock101.playmusic.ui.fragment.ParentTabFragment
 import dagger.BindsInstance
 import dagger.Component
@@ -17,5 +18,5 @@ interface AppComponent {
         fun create(@BindsInstance application: Application): AppComponent
     }
 
-    fun inject(fragment: ParentTabFragment)
+    fun inject(fragment: ListOfSongsFragment)
 }

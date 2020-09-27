@@ -4,15 +4,12 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.sagaRock101.playmusic.MyApplication
+import com.sagaRock101.playmusic.R
 import com.sagaRock101.playmusic.databinding.FragmentListOfSongsBinding
 import com.sagaRock101.playmusic.model.Song
 import com.sagaRock101.playmusic.ui.adapter.SongAdapter
@@ -21,8 +18,7 @@ import com.sagaRock101.playmusic.viewModel.MyViewModelFactory
 import com.sagaRock101.playmusic.viewModel.SongViewModel
 import javax.inject.Inject
 
-class ListOfSongsFragment : Fragment()  {
-    private lateinit var binding: FragmentListOfSongsBinding
+class ListOfSongsFragment : BaseFragment<FragmentListOfSongsBinding>()  {
     val MY_PERMISSION_REQUEST = 1
     val TAG = this.javaClass.name
 
@@ -48,6 +44,10 @@ class ListOfSongsFragment : Fragment()  {
             viewModel.getSongs()
         }
     }
+    
+    override fun initFragmentImpl() {
+        songsObserver()
+    }
 
     private fun songsObserver() {
         viewModel.songsLD.observe(viewLifecycleOwner, Observer { songs ->
@@ -62,16 +62,6 @@ class ListOfSongsFragment : Fragment()  {
 
             }
         })
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentListOfSongsBinding.inflate(inflater)
-        songsObserver()
-        return binding.root
     }
 
     override fun onRequestPermissionsResult(
@@ -97,4 +87,7 @@ class ListOfSongsFragment : Fragment()  {
         super.onAttach(context)
         (activity!!.application as MyApplication).appComponent.inject(this)
     }
+
+
+    override fun getLayoutId() = R.layout.fragment_list_of_songs
 }

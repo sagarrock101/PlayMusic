@@ -2,8 +2,11 @@ package com.sagaRock101.playmusic.model
 
 import android.content.ContentUris
 import android.database.Cursor
+import android.os.Parcelable
 import android.provider.MediaStore
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Song(
     val id: Long = -1,
     val albumId: Long = 0,
@@ -14,7 +17,7 @@ data class Song(
     val duration: Int = 0,
     val trackNumber: Int = 0,
     val path: String = ""
-) {
+) : Parcelable {
     companion object {
         fun createFromCursor(cursor: Cursor, album_id: Long = 0): Song {
             return Song(

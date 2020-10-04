@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_main"
+    app:startDestination="@id/parentTabFragment">
+
+    <fragment
+        android:id="@+id/parentTabFragment"
+        android:name="com.sagaRock101.playmusic.ui.fragment.ParentTabFragment"
+        android:label="ParentTabFragment" >
+        <action
+            android:id="@+id/action_parentTabFragment_to_playerFragment"
+            app:destination="@id/playerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/playerFragment"
+        android:name="com.sagaRock101.playmusic.ui.fragment.PlayerFragment"
+        android:label="PlayerFragment" >
+        <argument
+            android:name="song"
+            app:argType="com.sagaRock101.playmusic.model.Song"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+</navigation>

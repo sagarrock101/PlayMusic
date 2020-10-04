@@ -1,20 +1,16 @@
 package com.sagaRock101.playmusic.ui.fragment
 
-import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.PackageManager
-import android.database.Cursor
-import android.media.AudioAttributes
-import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.sagaRock101.playmusic.MyApplication
 import com.sagaRock101.playmusic.R
 import com.sagaRock101.playmusic.databinding.FragmentListOfSongsBinding
 import com.sagaRock101.playmusic.model.Song
 import com.sagaRock101.playmusic.ui.adapter.SongAdapter
-import com.sagaRock101.playmusic.utils.Utils
 import com.sagaRock101.playmusic.viewModel.MyViewModelFactory
 import com.sagaRock101.playmusic.viewModel.SongViewModel
 import javax.inject.Inject
@@ -35,7 +31,7 @@ class ListOfSongsFragment : BaseFragment<FragmentListOfSongsBinding>() {
         super.onCreate(savedInstanceState)
 
         if (ContextCompat.checkSelfPermission(
-                activity!!,
+                requireContext()!!,
                 android.Manifest.permission.READ_EXTERNAL_STORAGE
             ) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -57,19 +53,14 @@ class ListOfSongsFragment : BaseFragment<FragmentListOfSongsBinding>() {
     private fun setAdapter() {
         binding.rvSongs.adapter = adapter
         adapter?.onItemClick = {
-            val songUri = Utils.getSongUri(it.id)
-            val mediaPlayer = MediaPlayer().apply {
-                setAudioAttributes(
-                    AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build()
-                )
-                setDataSource(context!!, songUri)
-                prepare()
-                start()
-            }
+            navigateToPlayer(it)
         }
+    }
+
+    private fun navigateToPlayer(song: Song) {
+        val action = ParentTabFragmentDirections.actionParentTabFragmentToPlayerFragment()
+        action.song = song
+        findNavController().navigate(action)
     }
 
     private fun songsObserver() {
@@ -99,7 +90,7 @@ class ListOfSongsFragment : BaseFragment<FragmentListOfSongsBinding>() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        (activity!!.application as MyApplication).appComponent.inject(this)
+        (requireActivity()!!.application as MyApplication).appComponent.inject(this)
     }
 
 

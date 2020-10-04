@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="song"
+            type="com.sagaRock101.playmusic.model.Song" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -96,6 +98,7 @@
             android:id="@+id/iv_album_art"
             android:layout_width="240dp"
             android:layout_height="240dp"
+            app:albumId="@{song.albumId}"
             android:src="@drawable/music_placeholder"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"

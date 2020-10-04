@@ -15,7 +15,7 @@ class FragmentViewPagerAdapter(fm: FragmentManager) : SmartFragmentStatePagerAda
         }
     }
 
-    override fun getCount() = 2
+    override fun getCount() = 1
 
 
 }

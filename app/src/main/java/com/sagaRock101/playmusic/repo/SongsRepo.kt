@@ -59,9 +59,10 @@ class SongsRepoImpl(context: Context) : SongsRepo {
             projection,
             selectionStatement.toString(),
             null,
-            null
-        )
+        MediaStore.Audio.Media.TITLE)
             ?: throw IllegalStateException("Unable to query ${MediaStore.Audio.Media.EXTERNAL_CONTENT_URI}, system returned null.")
     }
+
+
 
 }

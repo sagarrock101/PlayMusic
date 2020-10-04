@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import com.sagaRock101.playmusic.utils.MediaConstants.ARTWORK_URI
+import com.sagaRock101.playmusic.utils.MediaConstants.SONG_URI
 
 object Utils {
     fun showToast(ctx: Context, msg:String = "") {
@@ -23,5 +24,8 @@ object Utils {
             LayoutInflater.from(parent?.context)!!,
             layout, parent, false)
     }
+
+    fun getSongUri(songId: Long): Uri = ContentUris.withAppendedId(SONG_URI, songId)
+
 
 }

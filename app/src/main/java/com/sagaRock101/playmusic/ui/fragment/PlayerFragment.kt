@@ -2,23 +2,42 @@ package com.sagaRock101.playmusic.ui.fragment
 
 import android.media.AudioAttributes
 import android.media.MediaPlayer
+import android.os.Handler
+import android.widget.SeekBar
 import androidx.navigation.fragment.navArgs
 import com.sagaRock101.playmusic.R
 import com.sagaRock101.playmusic.databinding.FragmentPlayerBinding
 import com.sagaRock101.playmusic.utils.Utils
+import timber.log.Timber
 
-class PlayerFragment : BaseFragment<FragmentPlayerBinding>() {
+class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarChangeListener {
+    private lateinit var seekBar: SeekBar
+    private var mediaPlayer: MediaPlayer? = null
     private val args: PlayerFragmentArgs by navArgs()
+    private val seekBarHandler = Handler()
+    private var seekBarRunnable: Runnable = object : Runnable {
+        override fun run() {
+            if (mediaPlayer != null) {
+                var currentPos = mediaPlayer?.currentPosition?.div(1000)
+                if (currentPos != null) {
+                    seekBar.progress = currentPos
+                    Timber.e("handler: ${seekBar.progress}")
+                }
+            }
+            seekBarHandler.postDelayed(this, 50)
+        }
+    }
     override fun initFragmentImpl() {
         binding.song = args.song
         startPlayer()
+        initSeekBar()
     }
 
     override fun getLayoutId() = R.layout.fragment_player
 
     private fun startPlayer() {
         val songUri = Utils.getSongUri(args.song!!.id)
-        val mediaPlayer = MediaPlayer().apply {
+        mediaPlayer = MediaPlayer().apply {
             setAudioAttributes(
                 AudioAttributes.Builder()
                     .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
@@ -29,6 +48,42 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>() {
             prepare()
             start()
         }
+    }
+
+    private fun initSeekBar() {
+        seekBar = binding.seekBar
+        var totalDuration = mediaPlayer?.duration?.div(1000)
+        seekBar.max = totalDuration!!
+        seekBar.setOnSeekBarChangeListener(this)
+
+        seekBarHandler.postDelayed(seekBarRunnable, 0)
+
+    }
+
+    override fun onDestroy() {
+        mediaPlayer?.stop()
+        mediaPlayer?.release()
+        mediaPlayer = null
+        super.onDestroy()
+    }
+
+    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        if (mediaPlayer != null && fromUser) {
+            var value = seekBar?.progress?.times(1000)
+            mediaPlayer?.seekTo(value!!)
+            Timber.e("onProgressChanged: ${seekBar!!.progress}")
+        }
+    }
+
+    override fun onStartTrackingTouch(seekBar: SeekBar?) {
+    }
+
+    override fun onStopTrackingTouch(seekBar: SeekBar?) {
+    }
+
+    override fun onPause() {
+        seekBarHandler.removeCallbacks(seekBarRunnable)
+        super.onPause()
     }
 
 }

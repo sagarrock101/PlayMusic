@@ -5,6 +5,7 @@ import android.content.Context
 import com.sagaRock101.playmusic.di.module.AppModule
 import com.sagaRock101.playmusic.ui.fragment.ListOfSongsFragment
 import com.sagaRock101.playmusic.ui.fragment.ParentTabFragment
+import com.sagaRock101.playmusic.ui.fragment.PlayerFragment
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -19,4 +20,5 @@ interface AppComponent {
     }
 
     fun inject(fragment: ListOfSongsFragment)
+    fun inject(fragment: PlayerFragment)
 }

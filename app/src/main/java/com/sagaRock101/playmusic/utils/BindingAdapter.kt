@@ -11,6 +11,8 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.sagaRock101.playmusic.R
 import com.sagaRock101.playmusic.utils.Utils.getAlbumArtUri
+import java.io.InputStream
+import java.lang.Exception
 
 @BindingAdapter("app:albumId", "app:recycled", requireAll = false)
 fun setSongImg(
@@ -46,4 +48,23 @@ fun setSongImg(
 
         }
 
+}
+
+@BindingAdapter("app:loadRoundedAlbumImage")
+fun ImageView.roundedImg(albumId: Long) {
+    var stream: InputStream? = null
+    try {
+        stream = this.context.contentResolver.openInputStream(getAlbumArtUri(albumId))
+    } catch (e: Exception) {
+
+    }
+    if(stream == null) {
+        Glide.with(this.context).load(R.drawable.music_placeholder)
+            .into(this)
+    } else {
+        Glide.with(this.context).load(getAlbumArtUri(albumId))
+            .circleCrop()
+            .into(this)
+    }
+    
 }

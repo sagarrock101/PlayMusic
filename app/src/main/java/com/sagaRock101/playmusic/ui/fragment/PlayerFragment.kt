@@ -3,14 +3,17 @@ package com.sagaRock101.playmusic.ui.fragment
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Handler
+import android.view.View
+import android.widget.Button
 import android.widget.SeekBar
 import androidx.navigation.fragment.navArgs
 import com.sagaRock101.playmusic.R
 import com.sagaRock101.playmusic.databinding.FragmentPlayerBinding
 import com.sagaRock101.playmusic.utils.Utils
+import kotlinx.android.synthetic.main.fragment_player.*
 import timber.log.Timber
 
-class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarChangeListener {
+class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarChangeListener, View.OnClickListener {
     private lateinit var seekBar: SeekBar
     private var mediaPlayer: MediaPlayer? = null
     private val args: PlayerFragmentArgs by navArgs()
@@ -29,6 +32,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
     }
     override fun initFragmentImpl() {
         binding.song = args.song
+        binding.btnPlay.setOnClickListener(this)
         startPlayer()
         initSeekBar()
     }
@@ -84,6 +88,26 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
     override fun onPause() {
         seekBarHandler.removeCallbacks(seekBarRunnable)
         super.onPause()
+    }
+
+    private fun updatePlayButtonWhenPlayBtnPressed(v: View) {
+        if (v !is Button)
+            return
+        if (mediaPlayer!!.isPlaying) {
+            v.setBackgroundResource(R.drawable.ic_play)
+            mediaPlayer?.pause()
+        } else {
+            v.setBackgroundResource(R.drawable.ic_pause_button)
+            mediaPlayer?.start()
+        }
+    }
+
+    override fun onClick(v: View?) {
+        when(v) {
+            binding.btnPlay -> {
+                updatePlayButtonWhenPlayBtnPressed(v)
+            }
+        }
     }
 
 }

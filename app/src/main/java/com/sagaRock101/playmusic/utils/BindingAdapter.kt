@@ -66,5 +66,5 @@ fun ImageView.roundedImg(albumId: Long) {
             .circleCrop()
             .into(this)
     }
-    
+
 }

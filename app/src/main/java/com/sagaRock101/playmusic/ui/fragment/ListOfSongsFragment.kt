@@ -3,6 +3,7 @@ package com.sagaRock101.playmusic.ui.fragment
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -34,9 +35,13 @@ class ListOfSongsFragment : BaseFragment<FragmentListOfSongsBinding>() {
                 requireContext()!!,
                 android.Manifest.permission.READ_EXTERNAL_STORAGE
             ) != PackageManager.PERMISSION_GRANTED
+            && ContextCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.RECORD_AUDIO
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
             requestPermissions(
-                arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
+                arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.RECORD_AUDIO),
                 MY_PERMISSION_REQUEST
             )
         } else {

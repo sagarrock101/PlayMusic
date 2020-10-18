@@ -9,7 +9,8 @@
         android:label="ParentTabFragment" >
         <action
             android:id="@+id/action_parentTabFragment_to_playerFragment"
-            app:destination="@id/playerFragment" />
+            app:destination="@id/playerFragment"
+            app:enterAnim="@android:anim/slide_in_left" />
     </fragment>
     <fragment
         android:id="@+id/playerFragment"

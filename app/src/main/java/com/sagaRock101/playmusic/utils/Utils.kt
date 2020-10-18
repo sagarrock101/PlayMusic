@@ -6,6 +6,7 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import com.sagaRock101.playmusic.utils.MediaConstants.ARTWORK_URI
@@ -27,5 +28,6 @@ object Utils {
 
     fun getSongUri(songId: Long): Uri = ContentUris.withAppendedId(SONG_URI, songId)
 
+    fun getColor(context: Context, value: Int) = ResourcesCompat.getColor(context.resources, value, null)
 
 }

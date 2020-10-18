@@ -3,17 +3,19 @@ package com.sagaRock101.playmusic.ui.fragment
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.graphics.drawable.Drawable
 import android.media.AudioAttributes
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Handler
+import android.provider.MediaStore
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
@@ -22,8 +24,10 @@ import com.bumptech.glide.request.transition.Transition
 import com.gauravk.audiovisualizer.visualizer.BlobVisualizer
 import com.sagaRock101.playmusic.R
 import com.sagaRock101.playmusic.databinding.FragmentPlayerBinding
+import com.sagaRock101.playmusic.model.Song
 import com.sagaRock101.playmusic.ui.interfaces.OnBackPressedListener
 import com.sagaRock101.playmusic.utils.Utils
+import com.sagaRock101.playmusic.utils.roundedImg
 import timber.log.Timber
 import java.io.InputStream
 import java.lang.Exception
@@ -35,9 +39,9 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
     private var mediaPlayer: MediaPlayer? = null
     private val args: PlayerFragmentArgs by navArgs()
     private val seekBarHandler = Handler()
-    private var audioVisualizerColor: Int? = R.color.colorPrimary
+    private var audioVisualizerColor: Int? = null
     private lateinit var onBackPressedListener: OnBackPressedListener
-    private lateinit var palette: Palette
+    private var palette: Palette? = null
     private var seekBarRunnable: Runnable = object : Runnable {
         override fun run() {
             if (mediaPlayer != null) {
@@ -52,77 +56,60 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
     }
 
     override fun initFragmentImpl() {
-        (activity as AppCompatActivity).supportActionBar!!.hide()
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
         binding.song = args.song
         binding.btnPlay.setOnClickListener(this)
         binding.btnBack.setOnClickListener(this)
-        binding.ivAlbumArt.roundedImg(args.song!!.albumId)
+        var bitmap = generateBitmap(args.song)
+        if (bitmap != null)
+            createPalette(bitmap)
+        setAlbumArtColor()
+        setLayoutBackgroundColor()
         startPlayer()
         initSeekBar()
+        initVisualizer()
     }
 
-    fun ImageView.roundedImg(albumId: Long) {
+    private fun generateBitmap(song: Song?): Bitmap? {
         var stream: InputStream? = null
+        var albumArtUri: Uri = Utils.getAlbumArtUri(song!!.albumId)
         try {
-            stream = this.context.contentResolver.openInputStream(Utils.getAlbumArtUri(albumId))
+            stream = this.requireContext().contentResolver.openInputStream(albumArtUri)
         } catch (e: Exception) {
 
         }
-        if (stream == null) {
-            Glide.with(this.context).load(R.drawable.music_placeholder)
-                .into(this)
-        } else {
-            Glide.with(this.context)
-                .asBitmap()
-                .load(Utils.getAlbumArtUri(albumId))
-                .circleCrop()
-                .into(object : CustomTarget<Bitmap>() {
-                    override fun onResourceReady(
-                        resource: Bitmap,
-                        transition: Transition<in Bitmap>?
-                    ) {
-                        this@roundedImg.setImageBitmap(resource)
-                        createPalette(resource)
-                        setAlbumArtColor()
-                        setLayoutBackgroundColor()
-                        initVisualizer()
-                    }
-
-                    override fun onLoadCleared(placeholder: Drawable?) {
-                        // this is called when imageView is cleared on lifecycle call or for
-                        // some other reason.
-                        // if you are referencing the bitmap somewhere else too other than this imageView
-                        // clear it here as you can no longer have the bitmap
-                    }
-                })
-        }
-
+        return if(stream != null)
+            MediaStore.Images.Media.getBitmap(requireContext().contentResolver, albumArtUri)
+        else null
     }
 
     private fun setLayoutBackgroundColor() {
-        var bgLayoutColor = palette.getLightVibrantColor(
-            ResourcesCompat.getColor(
-                requireContext().resources,
-                R.color.backgroundColor,
-                null
+        if(palette != null) {
+            var bgLayoutColor = palette?.getLightMutedColor(
+                getColor(R.color.backgroundColor)
             )
-        )
-        binding.clPlayer.setBackgroundColor(bgLayoutColor)
+            binding.clPlayer.setBackgroundColor(bgLayoutColor!!)
+            (activity as AppCompatActivity).window.apply {
+                navigationBarColor = bgLayoutColor
+                statusBarColor = bgLayoutColor
+            }
+        }
     }
 
     private fun createPalette(resource: Bitmap) {
         palette = createPaletteSync(resource)
     }
 
+    private fun getColor(value: Int) =
+        ResourcesCompat.getColor(requireContext().resources, value, null)
+
     @SuppressLint("ResourceAsColor")
     private fun setAlbumArtColor() {
-        audioVisualizerColor = palette.getDominantColor(
-            ResourcesCompat.getColor(
-                requireContext().resources,
-                R.color.colorAccent,
-                null
+        if(palette != null) {
+            audioVisualizerColor = palette?.getDarkVibrantColor(
+                getColor(R.color.colorAccent)
             )
-        )
+        }
     }
 
     private fun initVisualizer() {
@@ -151,7 +138,9 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
     }
 
     private fun getAudioVisualizerColor(): Int {
-        return audioVisualizerColor!!
+        return if(audioVisualizerColor != null)
+            audioVisualizerColor!!
+        else getColor(R.color.colorPrimary)
     }
 
     private fun initSeekBar() {
@@ -159,7 +148,6 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
         var totalDuration = mediaPlayer?.duration?.div(1000)
         seekBar.max = totalDuration!!
         seekBar.setOnSeekBarChangeListener(this)
-
         seekBarHandler.postDelayed(seekBarRunnable, 0)
 
     }
@@ -212,7 +200,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
             }
         }
     }
-    
+
     private fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
 
     @SuppressLint("ResourceAsColor")

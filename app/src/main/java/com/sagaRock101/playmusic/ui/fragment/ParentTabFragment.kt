@@ -10,7 +10,7 @@ class ParentTabFragment : BaseFragment<FragmentParentTabBinding>() {
 
     override fun initFragmentImpl() {
         setUpTabLayoutWithViewPager()
-//        (activity as AppCompatActivity?)!!.setSupportActionBar(binding.toolbar)
+        (activity as AppCompatActivity?)!!.setSupportActionBar(binding.toolbar)
     }
 
     private fun setUpTabLayoutWithViewPager() {

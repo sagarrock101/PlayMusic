@@ -135,6 +135,7 @@
             android:id="@+id/iv_album_art"
             android:layout_width="240dp"
             android:layout_height="240dp"
+            app:loadRoundedAlbumImage="@{song.albumId}"
             app:layout_constraintBottom_toTopOf="@id/seek_bar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

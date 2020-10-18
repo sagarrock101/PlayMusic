@@ -20,8 +20,15 @@
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|enterAlways"
                 >
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:gravity="top"
+                    />
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tab_layout"
+                    android:layout_gravity="bottom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.appbar.CollapsingToolbarLayout>

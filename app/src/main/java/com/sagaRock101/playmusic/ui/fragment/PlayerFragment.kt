@@ -57,6 +57,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
 
     override fun initFragmentImpl() {
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        binding.toolbar.title = ""
         binding.song = args.song
         binding.btnPlay.setOnClickListener(this)
         binding.btnBack.setOnClickListener(this)

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+
+
+    <Transition
+        motion:constraintSetEnd="@+id/expanded"
+        motion:constraintSetStart="@id/collapsed"
+        motion:duration="1000">
+        <OnSwipe
+            motion:dragDirection ="dragUp"
+            motion:touchAnchorSide="top"
+            motion:touchAnchorId="@id/iv_album_art"
+            />
+       <KeyFrameSet>
+       </KeyFrameSet>
+    </Transition>
+
+    <ConstraintSet android:id="@+id/collapsed">
+        <Constraint
+            android:id="@+id/iv_album_art"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            />
+
+<!--        <Constraint-->
+<!--            android:id="@+id/tv_song_name"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            motion:layout_constraintStart_toEndOf="@id/iv_album_art"-->
+<!--            motion:layout_constraintTop_toTopOf="@id/iv_album_art"-->
+<!--            motion:layout_constraintBottom_toBottomOf="@id/iv_album_art"-->
+<!--            />-->
+
+<!--        <Constraint-->
+<!--            android:id="@+id/btn_play"-->
+<!--            android:layout_width="24dp"-->
+<!--            android:layout_height="24dp"-->
+<!--            motion:layout_constraintEnd_toEndOf="parent"-->
+<!--            motion:layout_constraintTop_toTopOf="@id/iv_album_art"-->
+<!--            motion:layout_constraintBottom_toBottomOf="@id/iv_album_art"-->
+<!--            />-->
+
+<!--        <Constraint-->
+<!--            android:id="@+id/seek_bar"-->
+<!--            android:visibility="gone"-->
+<!--            />-->
+
+<!--        <Constraint-->
+<!--            android:id="@+id/audio_visualizer"-->
+<!--            android:layout_width="50dp"-->
+<!--            android:layout_height="200dp"-->
+<!--            motion:layout_constraintBottom_toBottomOf="parent"-->
+<!--            motion:layout_constraintStart_toStartOf="parent"-->
+<!--            />-->
+
+
+
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/expanded">
+        <Constraint
+            android:id="@+id/iv_album_art"
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            motion:layout_constraintBottom_toTopOf="@id/seek_bar"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintVertical_bias="0.36"
+            />
+
+<!--        <Constraint-->
+<!--            android:id="@+id/tv_song_name"-->
+<!--            motion:layout_constraintBottom_toTopOf="@+id/seek_bar"-->
+<!--            motion:layout_constraintEnd_toEndOf="parent"-->
+<!--            motion:layout_constraintStart_toStartOf="parent"-->
+<!--            motion:layout_constraintTop_toBottomOf="@id/iv_album_art"-->
+<!--            motion:layout_constraintVertical_bias="0.37"-->
+<!--            />-->
+
+<!--        <Constraint-->
+<!--            android:id="@+id/btn_play"-->
+<!--            android:layout_width="56dp"-->
+<!--            android:layout_height="56dp"-->
+<!--            motion:layout_constraintBottom_toBottomOf="@id/iv_repeat"-->
+<!--            motion:layout_constraintEnd_toStartOf="@id/right_guide_line"-->
+<!--            motion:layout_constraintStart_toEndOf="@id/left_guide_line"-->
+<!--            motion:layout_constraintTop_toTopOf="@id/iv_repeat"-->
+<!--            />-->
+
+<!--        <Constraint-->
+<!--            android:id="@+id/seek_bar"-->
+<!--            android:visibility="visible"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            motion:layout_constraintBottom_toBottomOf="parent"-->
+<!--            motion:layout_constraintEnd_toEndOf="parent"-->
+<!--            motion:layout_constraintStart_toStartOf="parent"-->
+<!--            motion:layout_constraintTop_toTopOf="parent"-->
+<!--            motion:layout_constraintVertical_bias="0.77"-->
+<!--            />-->
+
+
+
+<!--        <Constraint-->
+<!--            android:id="@+id/audio_visualizer"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            motion:layout_constraintEnd_toEndOf="@id/iv_album_art"-->
+<!--            motion:layout_constraintStart_toStartOf="@id/iv_album_art"-->
+<!--            motion:layout_constraintTop_toTopOf="@id/iv_album_art"-->
+<!--            motion:layout_constraintBottom_toBottomOf="@id/iv_album_art"-->
+<!--            />-->
+    </ConstraintSet>
+</MotionScene>

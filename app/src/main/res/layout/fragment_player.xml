@@ -8,31 +8,32 @@
             type="com.sagaRock101.playmusic.model.Song" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.motion.widget.MotionLayout
         android:id="@+id/cl_player"
-        android:background="@color/backgroundColor"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/backgroundColor"
+        app:layoutDescription="@xml/fragment_player_xml_cl_player_scene">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
 
         <ImageButton
             android:id="@+id/btn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_back"
             android:layout_marginStart="12dp"
-            app:layout_constraintStart_toStartOf="@id/toolbar"
-            app:layout_constraintTop_toTopOf="@id/toolbar"
+            android:background="@drawable/ic_back"
             app:layout_constraintBottom_toBottomOf="@id/toolbar"
-            />
+            app:layout_constraintStart_toStartOf="@id/toolbar"
+            app:layout_constraintTop_toTopOf="@id/toolbar" />
 
         <SeekBar
             android:id="@+id/seek_bar"
@@ -50,12 +51,11 @@
             android:id="@+id/iv_repeat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_repeat_button"
             android:layout_marginStart="14dp"
-            app:layout_constraintTop_toBottomOf="@id/seek_bar"
-            app:layout_constraintStart_toStartOf="parent"
+            android:src="@drawable/ic_repeat_button"
             app:layout_constraintBottom_toBottomOf="parent"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/seek_bar" />
 
         <ImageView
             android:id="@+id/iv_backward"
@@ -72,75 +72,81 @@
             android:id="@+id/iv_shuffle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_shuffle"
             android:layout_marginEnd="14dp"
-            app:layout_constraintTop_toTopOf="@id/iv_repeat"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:src="@drawable/ic_shuffle"
             app:layout_constraintBottom_toBottomOf="@id/iv_repeat"
-            />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/iv_repeat" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/left_guide_line"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.25"
-            />
+            app:layout_constraintGuide_percent="0.25" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/right_guide_line"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.75"
-            />
+            app:layout_constraintGuide_percent="0.75" />
 
         <ImageView
             android:id="@+id/iv_forward"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_play_next_button"
-            app:layout_constraintEnd_toStartOf="@id/right_guide_line"
-            app:layout_constraintTop_toTopOf="@id/iv_repeat"
             app:layout_constraintBottom_toBottomOf="@id/iv_repeat"
-            />
+            app:layout_constraintEnd_toStartOf="@id/right_guide_line"
+            app:layout_constraintTop_toTopOf="@id/iv_repeat" />
 
         <Button
             android:id="@+id/btn_play"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:background="@drawable/ic_pause_button"
-            app:layout_constraintTop_toTopOf="@id/iv_repeat"
-            app:layout_constraintStart_toEndOf="@id/left_guide_line"
-            app:layout_constraintEnd_toStartOf="@id/right_guide_line"
             app:layout_constraintBottom_toBottomOf="@id/iv_repeat"
-            />
+            app:layout_constraintEnd_toStartOf="@id/right_guide_line"
+            app:layout_constraintStart_toEndOf="@id/left_guide_line"
+            app:layout_constraintTop_toTopOf="@id/iv_repeat" />
 
         <com.gauravk.audiovisualizer.visualizer.BlobVisualizer
             android:id="@+id/audio_visualizer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:avType="fill"
-            app:avColor="@color/colorPrimary"
-            app:avSpeed="slow"
-            app:avDensity="0.8"
             android:padding="10dp"
-            app:layout_constraintTop_toTopOf="@id/iv_album_art"
+            app:avColor="@color/colorPrimary"
+            app:avDensity="0.8"
+            app:avSpeed="slow"
+            app:avType="fill"
             app:layout_constraintBottom_toBottomOf="@id/iv_album_art"
-            app:layout_constraintStart_toStartOf="@id/iv_album_art"
             app:layout_constraintEnd_toEndOf="@id/iv_album_art"
-            />
+            app:layout_constraintStart_toStartOf="@id/iv_album_art"
+            app:layout_constraintTop_toTopOf="@id/iv_album_art" />
 
         <ImageView
             android:id="@+id/iv_album_art"
             android:layout_width="240dp"
             android:layout_height="240dp"
-            app:loadRoundedAlbumImage="@{song.albumId}"
             app:layout_constraintBottom_toTopOf="@id/seek_bar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.36" />
+            app:layout_constraintVertical_bias="0.36"
+            app:loadRoundedAlbumImage="@{song.albumId}" />
+
+<!--        <include-->
+<!--            android:id="@+id/layout_album_visualizer"-->
+<!--            android:layout_width="240dp"-->
+<!--            android:layout_height="240dp"-->
+<!--            app:albumId="@{song.albumId}"-->
+<!--            layout="@layout/layout_album_img_with_visualizer"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            />-->
 
         <TextView
             android:id="@+id/tv_song_name"
@@ -162,19 +168,17 @@
             android:id="@+id/tv_album_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:textColor="@color/colorBlack"
-            tools:text = "music title"
-            android:textStyle="bold"
-            android:gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            android:text="@{song.title}"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="10dp"
-            app:layout_constraintTop_toBottomOf="@id/tv_song_name"
-            app:layout_constraintStart_toStartOf="parent"
+            android:gravity="center_horizontal"
+            android:text="@{song.title}"
+            android:textColor="@color/colorBlack"
+            android:textSize="24sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_song_name"
+            tools:text="music title" />
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 </layout>

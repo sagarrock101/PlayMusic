@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="albumId"
+            type="Long" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="240dp"
+        android:layout_height="240dp">
+
+        <com.gauravk.audiovisualizer.visualizer.BlobVisualizer
+            android:id="@+id/audio_visualizer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:avType="fill"
+            app:avColor="@color/colorPrimary"
+            app:avSpeed="slow"
+            app:avDensity="0.8"
+            android:padding="10dp"
+            app:layout_constraintTop_toTopOf="@id/iv_album_art"
+            app:layout_constraintBottom_toBottomOf="@id/iv_album_art"
+            app:layout_constraintStart_toStartOf="@id/iv_album_art"
+            app:layout_constraintEnd_toEndOf="@id/iv_album_art" />
+
+        <ImageView
+            android:id="@+id/iv_album_art"
+            android:layout_width="240dp"
+            android:layout_height="240dp"
+            app:loadRoundedAlbumImage="@{albumId}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.36" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

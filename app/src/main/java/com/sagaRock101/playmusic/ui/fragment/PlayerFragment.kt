@@ -8,14 +8,18 @@ import android.graphics.drawable.Drawable
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
@@ -32,14 +36,16 @@ import timber.log.Timber
 import java.io.InputStream
 import java.lang.Exception
 
-class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarChangeListener,
+class PlayerFragment : Fragment(),  SeekBar.OnSeekBarChangeListener,
     View.OnClickListener {
     private lateinit var audioVisualizer: BlobVisualizer
     private lateinit var seekBar: SeekBar
     private var mediaPlayer: MediaPlayer? = null
-    private val args: PlayerFragmentArgs by navArgs()
+    lateinit var binding: FragmentPlayerBinding
+//    private val args: PlayerFragmentArgs by navArgs()
     private val seekBarHandler = Handler()
     private var audioVisualizerColor: Int? = null
+    lateinit var song: Song
     private lateinit var onBackPressedListener: OnBackPressedListener
     private var palette: Palette? = null
     private var seekBarRunnable: Runnable = object : Runnable {
@@ -55,13 +61,22 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
         }
     }
 
-    override fun initFragmentImpl() {
+    fun setSongData(song: Song) {
+        this.song = song
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentPlayerBinding.inflate(inflater)
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
         binding.toolbar.title = ""
-        binding.song = args.song
+        binding.song = song
         binding.btnPlay.setOnClickListener(this)
         binding.btnBack.setOnClickListener(this)
-        var bitmap = generateBitmap(args.song)
+        var bitmap = generateBitmap(song)
         if (bitmap != null)
             createPalette(bitmap)
         setAlbumArtColor()
@@ -69,6 +84,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
         startPlayer()
         initSeekBar()
         initVisualizer()
+        return binding.root
     }
 
     private fun generateBitmap(song: Song?): Bitmap? {
@@ -121,10 +137,8 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
         audioVisualizer.setColor(getAudioVisualizerColor())
     }
 
-    override fun getLayoutId() = R.layout.fragment_player
-
     private fun startPlayer() {
-        val songUri = Utils.getSongUri(args.song!!.id)
+        val songUri = Utils.getSongUri(song!!.id)
         mediaPlayer = MediaPlayer().apply {
             setAudioAttributes(
                 AudioAttributes.Builder()

@@ -41,7 +41,10 @@ class ListOfSongsFragment : BaseFragment<FragmentListOfSongsBinding>() {
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             requestPermissions(
-                arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.RECORD_AUDIO),
+                arrayOf(
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                    android.Manifest.permission.RECORD_AUDIO
+                ),
                 MY_PERMISSION_REQUEST
             )
         } else {
@@ -63,9 +66,13 @@ class ListOfSongsFragment : BaseFragment<FragmentListOfSongsBinding>() {
     }
 
     private fun navigateToPlayer(song: Song) {
-        val action = ParentTabFragmentDirections.actionParentTabFragmentToPlayerFragment()
-        action.song = song
-        findNavController().navigate(action)
+//        val action = ParentTabFragmentDirections.actionParentTabFragmentToPlayerFragment()
+//        action.song = song
+//        findNavController().navigate(action)
+        var playerFragment = PlayerFragment()
+        playerFragment.setSongData(song)
+        (activity as AppCompatActivity).supportFragmentManager.beginTransaction()
+            .replace(binding.flContainer.id, playerFragment).commit()
     }
 
     private fun songsObserver() {

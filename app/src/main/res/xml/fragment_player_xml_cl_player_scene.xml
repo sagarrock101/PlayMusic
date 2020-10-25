@@ -20,25 +20,93 @@
                motion:framePosition="0"
                motion:motionTarget="@id/audio_visualizer"
                />
+
+           <KeyAttribute
+               android:alpha="0.0"
+               motion:framePosition="0"
+               motion:motionTarget="@id/iv_forward"
+               />
+
+           <KeyAttribute
+               android:alpha="0.0"
+               motion:framePosition="0"
+               motion:motionTarget="@id/tv_song_name"
+               />
+
+           <KeyAttribute
+               android:alpha="0.0"
+               motion:framePosition="0"
+               motion:motionTarget="@id/iv_shuffle"
+               />
+
+           <KeyAttribute
+               android:alpha="0.0"
+               motion:framePosition="0"
+               motion:motionTarget="@id/iv_backward"
+               />
+
+           <KeyAttribute
+               android:alpha="0.0"
+               motion:framePosition="0"
+               motion:motionTarget="@id/iv_backward"
+               />
+
+           <KeyAttribute
+               android:alpha="0.0"
+               motion:framePosition="0"
+               motion:motionTarget="@id/iv_repeat"
+               />
+
+           <KeyAttribute
+               android:alpha="0.0"
+               motion:framePosition="0"
+               motion:motionTarget="@id/seek_bar"
+               />
+
        </KeyFrameSet>
     </Transition>
 
     <ConstraintSet android:id="@+id/collapsed">
+
+
+        <Constraint
+            android:id="@+id/view_bg_2"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            />
+
         <Constraint
             android:id="@+id/iv_album_art"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            motion:layout_constraintVertical_bias="1"
+            android:layout_marginBottom="10dp"
+            motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintBottom_toBottomOf="parent"
             />
 
         <Constraint
-            android:id="@+id/view_bg_2"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            motion:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/btn_play"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="10dp"
+            motion:layout_constraintTop_toTopOf="@id/iv_album_art"
             motion:layout_constraintEnd_toEndOf="parent"
-            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintBottom_toBottomOf="@id/iv_album_art"
+            />
+
+        <Constraint
+            android:id="@+id/tv_album_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            motion:layout_constraintStart_toEndOf="@id/iv_album_art"
+            motion:layout_constraintTop_toTopOf="@id/iv_album_art"
+            motion:layout_constraintBottom_toBottomOf="@id/iv_album_art"
             />
 
 <!--        <Constraint-->

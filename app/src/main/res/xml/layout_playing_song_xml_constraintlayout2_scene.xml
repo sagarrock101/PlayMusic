@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetEnd="@+id/expanded"
+        motion:constraintSetStart="@+id/shrink"
+        motion:duration="1000">
+       <KeyFrameSet>
+       </KeyFrameSet>
+        <OnSwipe
+            motion:dragDirection="dragUp"
+            motion:maxAcceleration="200"
+            motion:touchAnchorId="@+id/iv_collapsed_bg"
+            motion:touchAnchorSide="top" />
+    </Transition>
+
+    <ConstraintSet android:id="@+id/shrink">
+        <Constraint
+            android:id="@+id/iv_collapsed_bg"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <Constraint
+            android:id="@+id/iv_music_img"
+            motion:layout_constraintStart_toStartOf="@id/iv_collapsed_bg"
+            motion:layout_constraintBottom_toBottomOf="@id/iv_collapsed_bg"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            />
+
+        <Constraint
+            android:id="@+id/ib_play_pause"
+            android:background="@drawable/ic_play_button_arrowhead"
+            android:layout_marginEnd="16dp"
+            motion:layout_constraintEnd_toEndOf="@id/iv_collapsed_bg"
+            motion:layout_constraintBottom_toBottomOf="@id/iv_collapsed_bg"
+            />
+
+        <Constraint
+            android:id="@+id/tv_song_name_bottom"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            />
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/expanded">
+      <Constraint
+          android:id="@+id/toolbar"
+          motion:layout_constraintTop_toTopOf="parent"
+          motion:layout_constraintStart_toStartOf="parent"
+          motion:layout_constraintEnd_toEndOf="parent"
+          />
+
+        <Constraint
+            android:id="@+id/btn_back"
+            motion:layout_constraintStart_toStartOf="@id/toolbar"
+            motion:layout_constraintTop_toTopOf="@id/toolbar"
+            motion:layout_constraintBottom_toBottomOf="@id/toolbar"
+            />
+
+        <Constraint
+            android:id="@+id/seek_bar"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintVertical_bias="0.77"
+            />
+
+        <Constraint
+            android:id="@+id/iv_repeat"
+            motion:layout_constraintTop_toBottomOf="@id/seek_bar"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <Constraint
+            android:id="@+id/iv_backward"
+            motion:layout_constraintBottom_toBottomOf="@id/iv_repeat"
+            motion:layout_constraintHorizontal_bias="0.0"
+            motion:layout_constraintStart_toStartOf="@+id/left_guide_line"
+            motion:layout_constraintTop_toTopOf="@id/iv_repeat"
+            />
+
+        <Constraint
+            android:id="@+id/iv_shuffle"
+            motion:layout_constraintTop_toTopOf="@id/iv_repeat"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintBottom_toBottomOf="@id/iv_repeat"
+            />
+
+        <Constraint
+            android:id="@+id/left_guide_line"
+            motion:layout_constraintGuide_percent="0.25"
+            />
+
+        <Constraint
+            android:id="@+id/right_guide_line"
+            motion:layout_constraintGuide_percent="0.75"
+            />
+
+        <Constraint
+            android:id="@+id/iv_forward"
+            motion:layout_constraintEnd_toStartOf="@id/right_guide_line"
+            motion:layout_constraintTop_toTopOf="@id/iv_repeat"
+            motion:layout_constraintBottom_toBottomOf="@id/iv_repeat"
+            />
+
+        <Constraint
+            android:id="@+id/btn_play"
+            motion:layout_constraintTop_toTopOf="@id/iv_repeat"
+            motion:layout_constraintStart_toEndOf="@id/left_guide_line"
+            motion:layout_constraintEnd_toStartOf="@id/right_guide_line"
+            motion:layout_constraintBottom_toBottomOf="@id/iv_repeat"
+            />
+
+        <Constraint
+            android:id="@+id/audio_visualizer"
+            motion:layout_constraintTop_toTopOf="@id/iv_album_art"
+            motion:layout_constraintBottom_toBottomOf="@id/iv_album_art"
+            motion:layout_constraintStart_toStartOf="@id/iv_album_art"
+            motion:layout_constraintEnd_toEndOf="@id/iv_album_art"
+            />
+
+        <Constraint
+            android:id="@+id/iv_album_art"
+            motion:layout_constraintBottom_toTopOf="@id/seek_bar"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintVertical_bias="0.36"
+            />
+
+        <Constraint
+            android:id="@+id/tv_song_name"
+            motion:layout_constraintBottom_toTopOf="@+id/seek_bar"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toBottomOf="@id/iv_album_art"
+            motion:layout_constraintVertical_bias="0.37"
+            />
+
+        <Constraint
+            android:id="@+id/tv_album_name"
+            motion:layout_constraintTop_toBottomOf="@id/tv_song_name"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <Constraint
+            android:id="@+id/iv_collapsed_bg"
+            android:visibility="gone"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <Constraint
+            android:id="@+id/iv_music_img"
+            android:visibility="gone"
+            motion:layout_constraintStart_toStartOf="@id/iv_collapsed_bg"
+            motion:layout_constraintBottom_toBottomOf="@id/iv_collapsed_bg"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            />
+
+        <Constraint
+            android:id="@+id/ib_play_pause"
+            android:visibility="gone"
+            android:background="@drawable/ic_play_button_arrowhead"
+            android:layout_marginEnd="16dp"
+            motion:layout_constraintEnd_toEndOf="@id/iv_collapsed_bg"
+            motion:layout_constraintBottom_toBottomOf="@id/iv_collapsed_bg"
+            />
+
+        <Constraint
+            android:id="@+id/tv_song_name_bottom"
+            android:visibility="gone"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            />
+    </ConstraintSet>
+</MotionScene>

@@ -1,10 +1,9 @@
 package com.sagaRock101.playmusic.ui.fragment
 
 import android.annotation.SuppressLint
+import android.app.ActionBar
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
-import android.graphics.drawable.Drawable
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.net.Uri
@@ -15,34 +14,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.navArgs
 import androidx.palette.graphics.Palette
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.gauravk.audiovisualizer.visualizer.BlobVisualizer
 import com.sagaRock101.playmusic.R
 import com.sagaRock101.playmusic.databinding.FragmentPlayerBinding
 import com.sagaRock101.playmusic.model.Song
 import com.sagaRock101.playmusic.ui.interfaces.OnBackPressedListener
 import com.sagaRock101.playmusic.utils.Utils
-import com.sagaRock101.playmusic.utils.roundedImg
 import timber.log.Timber
 import java.io.InputStream
 import java.lang.Exception
 
-class PlayerFragment : Fragment(),  SeekBar.OnSeekBarChangeListener,
-    View.OnClickListener {
+class PlayerFragment : Fragment(), SeekBar.OnSeekBarChangeListener,
+    View.OnClickListener, MotionLayout.TransitionListener {
     private lateinit var audioVisualizer: BlobVisualizer
     private lateinit var seekBar: SeekBar
     private var mediaPlayer: MediaPlayer? = null
     lateinit var binding: FragmentPlayerBinding
-//    private val args: PlayerFragmentArgs by navArgs()
+
+    //    private val args: PlayerFragmentArgs by navArgs()
     private val seekBarHandler = Handler()
     private var audioVisualizerColor: Int? = null
     lateinit var song: Song
@@ -76,6 +71,7 @@ class PlayerFragment : Fragment(),  SeekBar.OnSeekBarChangeListener,
         binding.song = song
         binding.btnPlay.setOnClickListener(this)
         binding.btnBack.setOnClickListener(this)
+        binding.clPlayer.addTransitionListener(this)
         var bitmap = generateBitmap(song)
         if (bitmap != null)
             createPalette(bitmap)
@@ -95,13 +91,13 @@ class PlayerFragment : Fragment(),  SeekBar.OnSeekBarChangeListener,
         } catch (e: Exception) {
 
         }
-        return if(stream != null)
+        return if (stream != null)
             MediaStore.Images.Media.getBitmap(requireContext().contentResolver, albumArtUri)
         else null
     }
 
     private fun setLayoutBackgroundColor() {
-        if(palette != null) {
+        if (palette != null) {
             var bgLayoutColor = palette?.getLightMutedColor(
                 getColor(R.color.backgroundColor)
             )
@@ -122,7 +118,7 @@ class PlayerFragment : Fragment(),  SeekBar.OnSeekBarChangeListener,
 
     @SuppressLint("ResourceAsColor")
     private fun setAlbumArtColor() {
-        if(palette != null) {
+        if (palette != null) {
             audioVisualizerColor = palette?.getDarkVibrantColor(
                 getColor(R.color.colorAccent)
             )
@@ -135,6 +131,13 @@ class PlayerFragment : Fragment(),  SeekBar.OnSeekBarChangeListener,
         if (audioSession != -1)
             audioVisualizer.setAudioSessionId(audioSession)
         audioVisualizer.setColor(getAudioVisualizerColor())
+    }
+
+    private fun changeLayoutParamsOfWidthHeight(width: Int, height: Int): ViewGroup.LayoutParams? {
+        var params = audioVisualizer.layoutParams
+        params.width = width
+        params.height = height
+        return params
     }
 
     private fun startPlayer() {
@@ -153,7 +156,7 @@ class PlayerFragment : Fragment(),  SeekBar.OnSeekBarChangeListener,
     }
 
     private fun getAudioVisualizerColor(): Int {
-        return if(audioVisualizerColor != null)
+        return if (audioVisualizerColor != null)
             audioVisualizerColor!!
         else getColor(R.color.colorPrimary)
     }
@@ -238,6 +241,20 @@ class PlayerFragment : Fragment(),  SeekBar.OnSeekBarChangeListener,
         super.onAttach(context)
         if (context is OnBackPressedListener)
             onBackPressedListener = context
+    }
+
+    override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
+
+    }
+
+    override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
+    }
+
+    override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {
+    }
+
+    override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
+
     }
 
 }

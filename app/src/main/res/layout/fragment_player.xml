@@ -15,6 +15,12 @@
         android:background="@color/backgroundColor"
         app:layoutDescription="@xml/fragment_player_xml_cl_player_scene">
 
+        <View
+            android:id="@+id/view_bg_2"
+            android:background="@color/backgroundColor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -22,8 +28,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-
 
         <ImageButton
             android:id="@+id/btn_back"
@@ -110,6 +114,8 @@
             app:layout_constraintEnd_toStartOf="@id/right_guide_line"
             app:layout_constraintStart_toEndOf="@id/left_guide_line"
             app:layout_constraintTop_toTopOf="@id/iv_repeat" />
+
+
 
         <com.gauravk.audiovisualizer.visualizer.BlobVisualizer
             android:id="@+id/audio_visualizer"

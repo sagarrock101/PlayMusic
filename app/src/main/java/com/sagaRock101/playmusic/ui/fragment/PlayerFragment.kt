@@ -101,7 +101,7 @@ class PlayerFragment : Fragment(), SeekBar.OnSeekBarChangeListener,
             var bgLayoutColor = palette?.getLightMutedColor(
                 getColor(R.color.backgroundColor)
             )
-            binding.clPlayer.setBackgroundColor(bgLayoutColor!!)
+            binding.viewBg2.setBackgroundColor(bgLayoutColor!!)
             (activity as AppCompatActivity).window.apply {
                 navigationBarColor = bgLayoutColor
                 statusBarColor = bgLayoutColor

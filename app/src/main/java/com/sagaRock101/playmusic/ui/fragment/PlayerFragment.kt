@@ -32,7 +32,7 @@ import java.lang.Exception
 class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarChangeListener,
     View.OnClickListener, MotionLayout.TransitionListener {
     private var bgLayoutColor: Int? = null
-    private lateinit var audioVisualizer: BlobVisualizer
+    private var audioVisualizer: BlobVisualizer? = null
     private lateinit var seekBar: SeekBar
     private var mediaPlayer: MediaPlayer? = null
 
@@ -69,6 +69,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
         startPlayer()
         initSeekBar()
         initVisualizer()
+        retainInstance = true
     }
 
     fun setSongData(song: Song, itemPosition: Int) {
@@ -114,23 +115,19 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
     }
 
     private fun initVisualizer() {
-        audioVisualizer = binding.audioVisualizer
-        var audioSession = mediaPlayer!!.audioSessionId
-        if (audioSession != -1)
-            audioVisualizer.setAudioSessionId(audioSession)
-        audioVisualizer.setColor(getAudioVisualizerColor())
-    }
-
-    private fun changeLayoutParamsOfWidthHeight(width: Int, height: Int): ViewGroup.LayoutParams? {
-        var params = audioVisualizer.layoutParams
-        params.width = width
-        params.height = height
-        return params
+        if(audioVisualizer == null) {
+            audioVisualizer = binding.audioVisualizer
+            var audioSession = mediaPlayer!!.audioSessionId
+            if (audioSession != -1)
+                audioVisualizer?.setAudioSessionId(audioSession)
+            audioVisualizer?.setColor(getAudioVisualizerColor())
+        }
     }
 
     private fun startPlayer() {
         val songUri = Utils.getSongUri(song!!.id)
-        mediaPlayer = MediaPlayer().apply {
+        if(mediaPlayer == null) {
+            mediaPlayer = MediaPlayer().apply {
             setAudioAttributes(
                 AudioAttributes.Builder()
                     .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
@@ -140,6 +137,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
             setDataSource(requireContext(), songUri)
             prepare()
             start()
+        }
         }
     }
 

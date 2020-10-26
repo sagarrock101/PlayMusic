@@ -10,7 +10,7 @@ import com.sagaRock101.playmusic.ui.interfaces.OnSongItemClickedListener
 
 class ParentTabFragment : BaseFragment<FragmentParentTabBinding>() {
 
-    lateinit var listener: OnSongItemClickedListener
+    var listener: OnSongItemClickedListener? = null
 
     override fun initFragmentImpl() {
         setUpTabLayoutWithViewPager()

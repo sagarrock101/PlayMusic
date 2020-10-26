@@ -7,7 +7,7 @@ import kotlinx.android.synthetic.main.item_song.view.*
 
 class SongViewHolder(
     var binding: ItemSongBinding,
-    onItemClick: ((Song) -> Unit)?
+    onItemClick: ((Song, Int) -> Unit)?
 ) : BaseViewHolder<Song>(binding) {
     override fun bind(item: Song) {
         binding.song = item
@@ -15,7 +15,7 @@ class SongViewHolder(
 
     init {
         itemView?.iv_control_higlighter.setOnClickListener {
-            onItemClick?.invoke(binding.song!!)
+            onItemClick?.invoke(binding.song!!, adapterPosition)
         }
     }
 }

@@ -8,20 +8,21 @@
             type="com.sagaRock101.playmusic.model.Song" />
     </data>
 
-    <androidx.constraintlayout.motion.widget.MotionLayout
+    <com.sagaRock101.playmusic.utils.SingleViewTouchableMotionLayout
         android:id="@+id/cl_player"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/backgroundColor"
+        android:background="@android:color/transparent"
         app:layoutDescription="@xml/fragment_player_xml_cl_player_scene">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/horizontal_base_guideline"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="1"
+            />
 
         <View
             android:id="@+id/view_bg_2"
@@ -33,11 +34,11 @@
             android:id="@+id/btn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
             android:layout_marginStart="12dp"
             android:background="@drawable/ic_back"
-            app:layout_constraintBottom_toBottomOf="@id/toolbar"
-            app:layout_constraintStart_toStartOf="@id/toolbar"
-            app:layout_constraintTop_toTopOf="@id/toolbar" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <SeekBar
             android:id="@+id/seek_bar"
@@ -155,7 +156,7 @@
 <!--            />-->
 
         <TextView
-            android:id="@+id/tv_song_name"
+            android:id="@+id/tv_album_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -163,6 +164,7 @@
             android:textColor="@color/colorBlack"
             android:textSize="28sp"
             android:textStyle="bold"
+            android:ellipsize="end"
             app:layout_constraintBottom_toTopOf="@+id/seek_bar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -171,8 +173,8 @@
             tools:text="music album" />
 
         <TextView
-            android:id="@+id/tv_album_name"
-            android:layout_width="0dp"
+            android:id="@+id/tv_title_name"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="8dp"
@@ -182,9 +184,10 @@
             android:textColor="@color/colorBlack"
             android:textSize="24sp"
             android:textStyle="bold"
+            android:ellipsize="end"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_song_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_album_name"
             tools:text="music title" />
-    </androidx.constraintlayout.motion.widget.MotionLayout>
+    </com.sagaRock101.playmusic.utils.SingleViewTouchableMotionLayout>
 </layout>

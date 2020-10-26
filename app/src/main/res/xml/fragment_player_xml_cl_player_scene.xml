@@ -30,7 +30,7 @@
            <KeyAttribute
                android:alpha="0.0"
                motion:framePosition="0"
-               motion:motionTarget="@id/tv_song_name"
+               motion:motionTarget="@id/tv_album_name"
                />
 
            <KeyAttribute
@@ -63,11 +63,19 @@
                motion:motionTarget="@id/seek_bar"
                />
 
+           <KeyAttribute
+               android:alpha="0.0"
+               motion:framePosition="0"
+               motion:motionTarget="@id/btn_back"
+               />
+
+
+
+
        </KeyFrameSet>
     </Transition>
 
     <ConstraintSet android:id="@+id/collapsed">
-
 
         <Constraint
             android:id="@+id/view_bg_2"
@@ -75,7 +83,7 @@
             android:layout_height="90dp"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
-            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintBottom_toTopOf="@id/horizontal_base_guideline"
             />
 
         <Constraint
@@ -86,7 +94,7 @@
             android:layout_marginBottom="10dp"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintBottom_toTopOf="@id/horizontal_base_guideline"
             />
 
         <Constraint
@@ -100,7 +108,7 @@
             />
 
         <Constraint
-            android:id="@+id/tv_album_name"
+            android:id="@+id/tv_title_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"

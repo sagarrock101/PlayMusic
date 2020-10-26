@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:motion="http://schemas.android.com/tools">
+
+
+
+    <Transition
+        app:constraintSetEnd="@id/expanded"
+        app:constraintSetStart="@+id/collapsed">
+
+        <KeyAttribute
+            app:framePosition="100"
+            app:motionTarget="@id/backgroundDim">
+            <CustomAttribute
+                app:attributeName="BackgroundColor"
+                app:customColorValue="#0b0b0b" />
+        </KeyAttribute>
+
+        <KeyAttribute
+            motion:framePosition="0"
+            motion:motionTarget="@+id/backgroundDim">
+            <CustomAttribute
+                motion:attributeName="BackgroundColor"
+                motion:customColorValue="@android:color/transparent" />
+        </KeyAttribute>
+    </Transition>
+
+    <ConstraintSet android:id="@+id/collapsed">
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/expanded">
+    </ConstraintSet>
+
+</MotionScene>

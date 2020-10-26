@@ -1,7 +1,6 @@
 package com.sagaRock101.playmusic.ui.fragment
 
 import android.annotation.SuppressLint
-import android.app.ActionBar
 import android.content.Context
 import android.graphics.Bitmap
 import android.media.AudioAttributes
@@ -32,6 +31,8 @@ import java.lang.Exception
 
 class PlayerFragment : Fragment(), SeekBar.OnSeekBarChangeListener,
     View.OnClickListener, MotionLayout.TransitionListener {
+    private var bgLayoutColor: Int? = null
+    private var horizontalBaseGuideLinePercent: Float = 1.0f
     private lateinit var audioVisualizer: BlobVisualizer
     private lateinit var seekBar: SeekBar
     private var mediaPlayer: MediaPlayer? = null
@@ -56,8 +57,15 @@ class PlayerFragment : Fragment(), SeekBar.OnSeekBarChangeListener,
         }
     }
 
-    fun setSongData(song: Song) {
+    fun setSongData(song: Song, itemPosition: Int) {
         this.song = song
+        changeGuideLinePercentBasedOnPosition(itemPosition)
+    }
+
+    private fun changeGuideLinePercentBasedOnPosition(itemPosition: Int) {
+        if (itemPosition <= 8) {
+//            horizontalBaseGuideLinePercent = 0.94f
+        }
     }
 
     override fun onCreateView(
@@ -66,8 +74,8 @@ class PlayerFragment : Fragment(), SeekBar.OnSeekBarChangeListener,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentPlayerBinding.inflate(inflater)
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
-        binding.toolbar.title = ""
+//        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+//        binding.toolbar.title = ""
         binding.song = song
         binding.btnPlay.setOnClickListener(this)
         binding.btnBack.setOnClickListener(this)
@@ -98,14 +106,10 @@ class PlayerFragment : Fragment(), SeekBar.OnSeekBarChangeListener,
 
     private fun setLayoutBackgroundColor() {
         if (palette != null) {
-            var bgLayoutColor = palette?.getLightMutedColor(
+            bgLayoutColor = palette?.getLightMutedColor(
                 getColor(R.color.backgroundColor)
             )
             binding.viewBg2.setBackgroundColor(bgLayoutColor!!)
-            (activity as AppCompatActivity).window.apply {
-                navigationBarColor = bgLayoutColor
-                statusBarColor = bgLayoutColor
-            }
         }
     }
 
@@ -244,17 +248,34 @@ class PlayerFragment : Fragment(), SeekBar.OnSeekBarChangeListener,
     }
 
     override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
-
     }
 
     override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
     }
 
-    override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {
+    override fun onTransitionChange(
+        motionLayout: MotionLayout?,
+        collapsed: Int,
+        expanded: Int,
+        progress: Float
+    ) {
+        if(motionLayout?.progress!! < 1.0f) {
+            (activity as AppCompatActivity).window.apply {
+                navigationBarColor = Utils.getColor(context, R.color.colorPrimaryDark)
+                statusBarColor = Utils.getColor(context, R.color.colorPrimaryDark)
+            }
+        }
     }
 
-    override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
-
+    override fun onTransitionCompleted(motionLayout: MotionLayout?, state: Int) {
+        if (state == R.id.expanded) {
+            if (bgLayoutColor != null) {
+                (activity as AppCompatActivity).window.apply {
+                    navigationBarColor = bgLayoutColor!!
+                    statusBarColor = bgLayoutColor!!
+                }
+            }
+        }
     }
 
 }

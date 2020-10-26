@@ -3,7 +3,6 @@ package com.sagaRock101.playmusic.utils
 import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
-import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import androidx.constraintlayout.motion.widget.MotionLayout
@@ -12,14 +11,14 @@ import com.sagaRock101.playmusic.R
 class SingleViewTouchableMotionLayout(context: Context, attributeSet: AttributeSet? = null) : MotionLayout(context, attributeSet) {
 
     private val viewToDetectTouch by lazy {
-        findViewById<View>(R.id.iv_collapsed_bg) //TODO move to Attributes
+        findViewById<View>(R.id.iv_album_art) //TODO move to Attributes
     }
     private val viewRect = Rect()
     private var touchStarted = false
     private val transitionListenerList = mutableListOf<TransitionListener?>()
 
     init {
-        addTransitionListener(object : TransitionListener {
+        addListener(object : TransitionListener {
             override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {
             }
 
@@ -53,20 +52,9 @@ class SingleViewTouchableMotionLayout(context: Context, attributeSet: AttributeS
         })
     }
 
-    override fun setTransitionListener(listener: TransitionListener?) {
-        addTransitionListener(listener)
-    }
-
-    override fun addTransitionListener(listener: TransitionListener?) {
+    private fun addListener(listener: TransitionListener?) {
         transitionListenerList += listener
     }
-
-    private val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-        override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-            transitionToEnd()
-            return false
-        }
-    })
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.actionMasked) {

@@ -12,6 +12,7 @@ import com.sagaRock101.playmusic.R
 import com.sagaRock101.playmusic.databinding.FragmentListOfSongsBinding
 import com.sagaRock101.playmusic.model.Song
 import com.sagaRock101.playmusic.ui.adapter.SongAdapter
+import com.sagaRock101.playmusic.ui.interfaces.OnSongItemClickedListener
 import com.sagaRock101.playmusic.viewModel.MyViewModelFactory
 import com.sagaRock101.playmusic.viewModel.SongViewModel
 import javax.inject.Inject
@@ -27,6 +28,8 @@ class ListOfSongsFragment : BaseFragment<FragmentListOfSongsBinding>() {
     lateinit var viewModelFactory: MyViewModelFactory
 
     private var adapter = SongAdapter()
+
+    lateinit var listener: OnSongItemClickedListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,19 +63,20 @@ class ListOfSongsFragment : BaseFragment<FragmentListOfSongsBinding>() {
 
     private fun setAdapter() {
         binding.rvSongs.adapter = adapter
-        adapter?.onItemClick = {
-            navigateToPlayer(it)
+        adapter?.onItemClick = {song, position ->
+            navigateToPlayer(song, position)
         }
     }
 
-    private fun navigateToPlayer(song: Song) {
+    private fun navigateToPlayer(song: Song, position: Int) {
+        listener.startPlayer(song, position)
 //        val action = ParentTabFragmentDirections.actionParentTabFragmentToPlayerFragment()
 //        action.song = song
 //        findNavController().navigate(action)
-        var playerFragment = PlayerFragment()
-        playerFragment.setSongData(song)
-        (activity as AppCompatActivity).supportFragmentManager.beginTransaction()
-            .replace(binding.flContainer.id, playerFragment).commit()
+//        var playerFragment = PlayerFragment()
+//        playerFragment.setSongData(song, position)
+//        (activity as AppCompatActivity).supportFragmentManager.beginTransaction()
+//            .replace(binding.flContainer.id, playerFragment).commit()
     }
 
     private fun songsObserver() {
@@ -107,4 +111,8 @@ class ListOfSongsFragment : BaseFragment<FragmentListOfSongsBinding>() {
 
 
     override fun getLayoutId() = R.layout.fragment_list_of_songs
+
+    fun setSongItemListener(listener: OnSongItemClickedListener) {
+        this.listener = listener
+    }
 }

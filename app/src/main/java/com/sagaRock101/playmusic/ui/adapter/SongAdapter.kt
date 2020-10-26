@@ -10,7 +10,7 @@ import com.sagaRock101.playmusic.utils.Utils
 
 class SongAdapter : BaseAdapter<Song>() {
     var layout = R.layout.item_song
-    var onItemClick: ((Song) -> Unit)? = null
+    var onItemClick: ((Song, Int) -> Unit)? = null
     override fun getLayoutId(position: Int, obj: Song) = layout
 
     override fun getViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<Song> {

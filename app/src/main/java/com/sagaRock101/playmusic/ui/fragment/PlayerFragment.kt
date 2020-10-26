@@ -29,16 +29,13 @@ import timber.log.Timber
 import java.io.InputStream
 import java.lang.Exception
 
-class PlayerFragment : Fragment(), SeekBar.OnSeekBarChangeListener,
+class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarChangeListener,
     View.OnClickListener, MotionLayout.TransitionListener {
     private var bgLayoutColor: Int? = null
-    private var horizontalBaseGuideLinePercent: Float = 1.0f
     private lateinit var audioVisualizer: BlobVisualizer
     private lateinit var seekBar: SeekBar
     private var mediaPlayer: MediaPlayer? = null
-    lateinit var binding: FragmentPlayerBinding
 
-    //    private val args: PlayerFragmentArgs by navArgs()
     private val seekBarHandler = Handler()
     private var audioVisualizerColor: Int? = null
     lateinit var song: Song
@@ -57,25 +54,9 @@ class PlayerFragment : Fragment(), SeekBar.OnSeekBarChangeListener,
         }
     }
 
-    fun setSongData(song: Song, itemPosition: Int) {
-        this.song = song
-        changeGuideLinePercentBasedOnPosition(itemPosition)
-    }
+    override fun getLayoutId() = R.layout.fragment_player
 
-    private fun changeGuideLinePercentBasedOnPosition(itemPosition: Int) {
-        if (itemPosition <= 8) {
-//            horizontalBaseGuideLinePercent = 0.94f
-        }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentPlayerBinding.inflate(inflater)
-//        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
-//        binding.toolbar.title = ""
+    override fun initFragmentImpl() {
         binding.song = song
         binding.btnPlay.setOnClickListener(this)
         binding.btnBack.setOnClickListener(this)
@@ -88,7 +69,10 @@ class PlayerFragment : Fragment(), SeekBar.OnSeekBarChangeListener,
         startPlayer()
         initSeekBar()
         initVisualizer()
-        return binding.root
+    }
+
+    fun setSongData(song: Song, itemPosition: Int) {
+        this.song = song
     }
 
     private fun generateBitmap(song: Song?): Bitmap? {
@@ -218,7 +202,7 @@ class PlayerFragment : Fragment(), SeekBar.OnSeekBarChangeListener,
                 updatePlayButtonWhenPlayBtnPressed(v)
             }
             binding.btnBack -> {
-                onBackPressedListener.onBackPressed()
+                binding.clPlayer.transitionToStart()
             }
         }
     }
@@ -277,5 +261,4 @@ class PlayerFragment : Fragment(), SeekBar.OnSeekBarChangeListener,
             }
         }
     }
-
 }

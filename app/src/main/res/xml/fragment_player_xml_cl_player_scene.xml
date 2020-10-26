@@ -3,16 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:motion="http://schemas.android.com/apk/res-auto">
 
-
-
     <Transition
         motion:constraintSetEnd="@+id/expanded"
         motion:constraintSetStart="@id/collapsed"
-        motion:duration="1000">
+        motion:duration="800">
         <OnSwipe
             motion:dragDirection ="dragUp"
             motion:touchAnchorSide="top"
-            motion:touchAnchorId="@id/iv_album_art"
+            motion:touchAnchorId="@id/view_bg_2"
             />
        <KeyFrameSet>
            <KeyAttribute
@@ -68,10 +66,6 @@
                motion:framePosition="0"
                motion:motionTarget="@id/btn_back"
                />
-
-
-
-
        </KeyFrameSet>
     </Transition>
 

@@ -7,8 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
-class MyViewModelFactory @Inject constructor(var application: Application) : ViewModelProvider.Factory {
+class MyViewModelFactory constructor(var application: Application) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SongViewModel::class.java)) {
             return SongViewModel(application) as T

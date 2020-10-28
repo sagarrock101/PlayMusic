@@ -3,10 +3,9 @@ package com.sagaRock101.playmusic.ui.fragment
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.ViewModelProvider
 import com.sagaRock101.playmusic.MyApplication
 import com.sagaRock101.playmusic.R
 import com.sagaRock101.playmusic.databinding.FragmentListOfSongsBinding
@@ -15,17 +14,13 @@ import com.sagaRock101.playmusic.ui.adapter.SongAdapter
 import com.sagaRock101.playmusic.ui.interfaces.OnSongItemClickedListener
 import com.sagaRock101.playmusic.viewModel.MyViewModelFactory
 import com.sagaRock101.playmusic.viewModel.SongViewModel
-import javax.inject.Inject
 
 class ListOfSongsFragment : BaseFragment<FragmentListOfSongsBinding>() {
     val MY_PERMISSION_REQUEST = 1
     val TAG = this.javaClass.name
 
-    @Inject
     lateinit var viewModel: SongViewModel
 
-    @Inject
-    lateinit var viewModelFactory: MyViewModelFactory
 
     private var adapter = SongAdapter()
 
@@ -33,6 +28,7 @@ class ListOfSongsFragment : BaseFragment<FragmentListOfSongsBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this, MyViewModelFactory(activity?.application!!)).get(SongViewModel::class.java)
 
         if (ContextCompat.checkSelfPermission(
                 requireContext()!!,
@@ -51,13 +47,21 @@ class ListOfSongsFragment : BaseFragment<FragmentListOfSongsBinding>() {
                 MY_PERMISSION_REQUEST
             )
         } else {
-            if (savedInstanceState == null)
+            if (savedInstanceState == null) {
                 viewModel?.getSongs()
+            }
+
         }
     }
 
-    override fun initFragmentImpl() {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         songsObserver()
+    }
+
+
+    override fun initFragmentImpl() {
+        retainInstance = true
         setAdapter()
     }
 
@@ -80,7 +84,7 @@ class ListOfSongsFragment : BaseFragment<FragmentListOfSongsBinding>() {
     }
 
     private fun songsObserver() {
-        viewModel?.songsLD?.observe(this!!, Observer { songs ->
+        viewModel?.songsLD?.observe(viewLifecycleOwner, Observer { songs ->
             if (!songs.isNullOrEmpty()) {
                 adapter.setItems(songs as MutableList<Song>)
             }
@@ -98,7 +102,7 @@ class ListOfSongsFragment : BaseFragment<FragmentListOfSongsBinding>() {
                 if (grantResults.isNotEmpty()
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED
                 ) {
-                    viewModel.getSongs()
+                    viewModel?.getSongs()
                 }
             }
         }

@@ -12,12 +12,10 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
-class SongViewModel @Inject constructor(application: Application) :
+class SongViewModel constructor(application: Application) :
     CoroutineViewModel(Dispatchers.Main) {
 
-    @Inject
-    lateinit var songsRepo: SongsRepoImpl
+    var songsRepo = SongsRepoImpl(application)
 
     private val _songsMLD = MutableLiveData<List<Song>>()
     val songsLD: LiveData<List<Song>> = _songsMLD

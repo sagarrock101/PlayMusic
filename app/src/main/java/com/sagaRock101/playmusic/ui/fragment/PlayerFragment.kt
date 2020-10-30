@@ -6,18 +6,14 @@ import android.graphics.Bitmap
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.net.Uri
-import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.Fragment
 import androidx.palette.graphics.Palette
 import com.gauravk.audiovisualizer.visualizer.BlobVisualizer
 import com.sagaRock101.playmusic.R
@@ -200,11 +196,18 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
                 updatePlayButtonWhenPlayBtnPressed(v)
             }
             binding.btnBack -> {
-                binding.clPlayer.transitionToStart()
+                makeTransitionToCollapse()
             }
         }
     }
 
+    fun makeTransitionToCollapse() {
+        binding.clPlayer.transitionToStart()
+    }
+
+    fun makeTransitionToExpanded() {
+        binding.clPlayer.transitionToEnd()
+    }
     private fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
 
     @SuppressLint("ResourceAsColor")

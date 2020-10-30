@@ -16,9 +16,13 @@ import com.sagaRock101.playmusic.ui.fragment.PlayerFragment
 import com.sagaRock101.playmusic.ui.interfaces.OnBackPressedListener
 import com.sagaRock101.playmusic.ui.interfaces.OnSongItemClickedListener
 import com.sagaRock101.playmusic.utils.Utils
+import kotlinx.android.synthetic.main.fragment_player.*
 
 
 class MainActivity : AppCompatActivity(), OnBackPressedListener, OnSongItemClickedListener  {
+    private val playerFragment by lazy {
+        PlayerFragment()
+    }
     private lateinit var binding: ActivityMainBinding
     private lateinit var sharedPrefFile: String
     private lateinit var sharedPreferences: SharedPreferences
@@ -41,7 +45,6 @@ class MainActivity : AppCompatActivity(), OnBackPressedListener, OnSongItemClick
     }
 
     private fun addPlayerFragment(song: Song, position: Int) {
-        var playerFragment = PlayerFragment()
         playerFragment.setSongData(song, position)
       supportFragmentManager.beginTransaction()
             .replace(binding.flContainer.id, playerFragment).commit()
@@ -70,7 +73,10 @@ class MainActivity : AppCompatActivity(), OnBackPressedListener, OnSongItemClick
             navigationBarColor = sharedPreferences.getInt(NAV_BAR_COLOR, R.color.colorPrimaryDark)
             statusBarColor = Utils.getColor(context, R.color.colorPrimaryDark)
         }
-        super.onBackPressed()
+        if(playerFragment.cl_player.currentState == R.id.expanded) {
+            playerFragment.makeTransitionToCollapse()
+        } else
+            super.onBackPressed()
     }
 
     override fun startPlayer(song: Song, position: Int) {

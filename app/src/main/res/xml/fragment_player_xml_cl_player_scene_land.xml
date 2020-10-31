@@ -139,6 +139,8 @@
             />
 
 
+
+
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/expanded">
@@ -199,6 +201,47 @@
             motion:layout_constraintBottom_toTopOf="@id/tv_album_name"
             motion:layout_constraintStart_toStartOf="@id/seek_bar"
             motion:layout_constraintEnd_toEndOf="@id/seek_bar"
+            />
+
+        <Constraint
+            android:id="@+id/iv_repeat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            motion:layout_constraintTop_toBottomOf="@id/seek_bar"
+            motion:layout_constraintStart_toStartOf="@id/seek_bar"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <Constraint
+            android:id="@id/btn_play"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            motion:layout_constraintTop_toTopOf="@id/iv_repeat"
+            motion:layout_constraintStart_toStartOf="@id/seek_bar"
+            motion:layout_constraintEnd_toEndOf="@id/seek_bar"
+            motion:layout_constraintBottom_toBottomOf="@id/iv_repeat"
+            />
+
+        <Constraint
+            android:id="@+id/iv_backward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rotation="180"
+            motion:layout_constraintTop_toTopOf="@id/iv_repeat"
+            motion:layout_constraintStart_toEndOf="@id/iv_repeat"
+            motion:layout_constraintEnd_toStartOf="@id/btn_play"
+            motion:layout_constraintBottom_toBottomOf="@id/iv_repeat"
+            />
+
+        <Constraint
+            android:id="@+id/iv_forward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            motion:layout_constraintStart_toEndOf="@id/btn_play"
+            motion:layout_constraintEnd_toStartOf="@id/iv_shuffle"
+            motion:layout_constraintTop_toBottomOf="@id/iv_repeat"
+            motion:layout_constraintBottom_toBottomOf="@id/iv_repeat"
             />
 
 <!--        <Constraint-->

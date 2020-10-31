@@ -20,18 +20,16 @@ import kotlinx.android.synthetic.main.fragment_player.*
 
 
 class MainActivity : AppCompatActivity(), OnBackPressedListener, OnSongItemClickedListener  {
-    private val playerFragment by lazy {
-        PlayerFragment()
-    }
+    private var playerFragment: PlayerFragment? = null
     private lateinit var binding: ActivityMainBinding
     private lateinit var sharedPrefFile: String
     private lateinit var sharedPreferences: SharedPreferences
     private var navigationBarColor: Int = 0
     private val NAV_BAR_COLOR = "nav_bar_color"
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-//        supportActionBar!!.elevation = 0f;
         setupSharedPref()
         addNavigationBarColorToSharedPref()
         addFragment(ParentTabFragment().apply {
@@ -45,10 +43,20 @@ class MainActivity : AppCompatActivity(), OnBackPressedListener, OnSongItemClick
     }
 
     private fun addPlayerFragment(song: Song, position: Int) {
-        playerFragment.setSongData(song, position)
-      supportFragmentManager.beginTransaction()
-            .replace(binding.flContainer.id, playerFragment).commit()
-        binding.flTabs.visibility = View.GONE
+        if(playerFragment == null) {
+            playerFragment = PlayerFragment()
+            playerFragment!!.setSongData(song, position)
+            playerFragment!!.let {
+                supportFragmentManager.beginTransaction()
+                    .replace(binding.flContainer.id, it).commit()
+            }
+        } else {
+            playerFragment!!.setSongData(song, position)
+            var fragmentTransaction = supportFragmentManager.beginTransaction()
+            fragmentTransaction.detach(playerFragment!!)
+            fragmentTransaction.attach(playerFragment!!)
+            fragmentTransaction.commit()
+        }
     }
 
     private fun addNavigationBarColorToSharedPref() {
@@ -63,18 +71,13 @@ class MainActivity : AppCompatActivity(), OnBackPressedListener, OnSongItemClick
         sharedPreferences = getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
     }
 
-//    override fun onSupportNavigateUp(): Boolean {
-//        val navController = this.findNavController(R.id.myNavHostFragment)
-//        return navController.navigateUp()
-//    }
-
     override fun onBackPressed() {
         window.apply {
             navigationBarColor = sharedPreferences.getInt(NAV_BAR_COLOR, R.color.colorPrimaryDark)
             statusBarColor = Utils.getColor(context, R.color.colorPrimaryDark)
         }
-        if(playerFragment.cl_player.currentState == R.id.expanded) {
-            playerFragment.makeTransitionToCollapse()
+        if(playerFragment?.cl_player?.currentState == R.id.expanded) {
+            playerFragment?.makeTransitionToCollapse()
         } else
             super.onBackPressed()
     }

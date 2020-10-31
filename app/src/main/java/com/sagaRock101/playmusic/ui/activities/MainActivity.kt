@@ -3,11 +3,9 @@ package com.sagaRock101.playmusic.ui.activities
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
 import com.sagaRock101.playmusic.R
 import com.sagaRock101.playmusic.databinding.ActivityMainBinding
 import com.sagaRock101.playmusic.model.Song
@@ -26,7 +24,7 @@ class MainActivity : AppCompatActivity(), OnBackPressedListener, OnSongItemClick
     private lateinit var sharedPreferences: SharedPreferences
     private var navigationBarColor: Int = 0
     private val NAV_BAR_COLOR = "nav_bar_color"
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -52,6 +50,8 @@ class MainActivity : AppCompatActivity(), OnBackPressedListener, OnSongItemClick
             }
         } else {
             playerFragment!!.setSongData(song, position)
+            playerFragment!!.resetPlayer()
+            playerFragment!!.releaseVisualizer()
             var fragmentTransaction = supportFragmentManager.beginTransaction()
             fragmentTransaction.detach(playerFragment!!)
             fragmentTransaction.attach(playerFragment!!)

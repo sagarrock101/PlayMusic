@@ -14,8 +14,8 @@ import com.gauravk.audiovisualizer.model.PositionGravity
 import com.gauravk.audiovisualizer.utils.AVConstants
 import com.sagaRock101.playmusic.R
 
-abstract class MyBaseVisualizer : ConstraintLayout {
-    protected lateinit var mRawAudioBytes: ByteArray
+abstract class MyBaseVisualizer : View {
+    protected var mRawAudioBytes: ByteArray? = null
     protected var mPaint: Paint? = null
     protected var mVisualizer: Visualizer? = null
     protected var mColor = AVConstants.DEFAULT_COLOR
@@ -180,6 +180,7 @@ abstract class MyBaseVisualizer : ConstraintLayout {
     fun setAudioSessionId(audioSessionId: Int) {
         if (mVisualizer != null) release()
         mVisualizer = Visualizer(audioSessionId)
+        mVisualizer!!.enabled = false
         mVisualizer!!.captureSize = Visualizer.getCaptureSizeRange()[1]
         mVisualizer!!.setDataCaptureListener(object : OnDataCaptureListener {
             override fun onWaveFormDataCapture(

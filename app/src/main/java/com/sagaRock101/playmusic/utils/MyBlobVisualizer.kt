@@ -87,7 +87,7 @@ class MyBlobVisualizer : MyBaseVisualizer {
 
         //create the path and draw
         if (isVisualizationEnabled && mRawAudioBytes != null) {
-            if (mRawAudioBytes.size == 0) {
+            if (mRawAudioBytes?.size == 0) {
                 return
             }
             mBlobPath!!.rewind()
@@ -97,10 +97,10 @@ class MyBlobVisualizer : MyBaseVisualizer {
                 var i = 0
                 while (i < nPoints) {
                     val x =
-                        Math.ceil((i + 1) * (mRawAudioBytes.size / nPoints).toDouble()).toInt()
+                        Math.ceil((i + 1) * (mRawAudioBytes?.size!! / nPoints).toDouble()).toInt()
                     var t = 0
                     if (x < 1024) t =
-                        (-Math.abs(mRawAudioBytes[x].toInt()) + 128) as Byte * (canvas.height / 4) / 128
+                        (-Math.abs(mRawAudioBytes?.get(x)!!.toInt()) + 128) as Byte * (canvas.height / 4) / 128
                     val posX = (width / 2
                             + (mRadius + t)
                             * Math.cos(Math.toRadians(angle))).toFloat()

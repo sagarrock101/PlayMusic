@@ -23,7 +23,6 @@ import com.sagaRock101.playmusic.ui.interfaces.OnBackPressedListener
 import com.sagaRock101.playmusic.utils.Utils
 import timber.log.Timber
 import java.io.InputStream
-import java.lang.Exception
 
 class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarChangeListener,
     View.OnClickListener, MotionLayout.TransitionListener {
@@ -111,29 +110,40 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
     }
 
     private fun initVisualizer() {
-        if(audioVisualizer == null) {
+//        if (audioVisualizer == null) {
+        try {
             audioVisualizer = binding.audioVisualizer
             var audioSession = mediaPlayer!!.audioSessionId
             if (audioSession != -1)
                 audioVisualizer?.setAudioSessionId(audioSession)
             audioVisualizer?.setColor(getAudioVisualizerColor())
+        } catch (e: Exception) {
+
         }
+//        }
     }
 
     private fun startPlayer() {
         val songUri = Utils.getSongUri(song!!.id)
-        if(mediaPlayer == null) {
+        if (mediaPlayer == null) {
             mediaPlayer = MediaPlayer().apply {
-            setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .build()
-            )
-            setDataSource(requireContext(), songUri)
-            prepare()
-            start()
+                setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build()
+                )
+            }
         }
+
+        try {
+            mediaPlayer?.apply {
+                setDataSource(requireContext(), songUri)
+                prepare()
+                start()
+            }
+        } catch (e: Exception) {
+            releaseVisualizer()
         }
     }
 
@@ -208,6 +218,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
     fun makeTransitionToExpanded() {
         binding.clPlayer.transitionToEnd()
     }
+
     private fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
 
     @SuppressLint("ResourceAsColor")
@@ -244,7 +255,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
         expanded: Int,
         progress: Float
     ) {
-        if(motionLayout?.progress!! < 1.0f) {
+        if (motionLayout?.progress!! < 1.0f) {
             (activity as AppCompatActivity).window.apply {
                 navigationBarColor = Utils.getColor(context, R.color.colorPrimaryDark)
                 statusBarColor = Utils.getColor(context, R.color.colorPrimaryDark)
@@ -261,5 +272,13 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
                 }
             }
         }
+    }
+
+    fun releaseVisualizer() {
+        audioVisualizer?.release()
+    }
+
+    fun resetPlayer() {
+        mediaPlayer?.let { it.reset() }
     }
 }

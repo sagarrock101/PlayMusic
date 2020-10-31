@@ -2,6 +2,7 @@ package com.sagaRock101.playmusic.ui.activities
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -33,6 +34,15 @@ class MainActivity : AppCompatActivity(), OnBackPressedListener, OnSongItemClick
         addFragment(ParentTabFragment().apply {
             listener = this@MainActivity
         })
+        val currentOrientation = resources.configuration.orientation
+        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // Landscape
+//            Utils.showToast(this, "landscape")
+//            playerFragment?.setLandScapeFlag(true)
+        } else {
+            // Portrait
+//            Utils.showToast(this, "potrait")
+        }
     }
 
     private fun addFragment(fragment: Fragment) {
@@ -76,7 +86,7 @@ class MainActivity : AppCompatActivity(), OnBackPressedListener, OnSongItemClick
             navigationBarColor = sharedPreferences.getInt(NAV_BAR_COLOR, R.color.colorPrimaryDark)
             statusBarColor = Utils.getColor(context, R.color.colorPrimaryDark)
         }
-        if(playerFragment?.cl_player?.currentState == R.id.expanded) {
+        if(playerFragment?.getMotionLayout()?.currentState == R.id.expanded) {
             playerFragment?.makeTransitionToCollapse()
         } else
             super.onBackPressed()
@@ -87,5 +97,4 @@ class MainActivity : AppCompatActivity(), OnBackPressedListener, OnSongItemClick
         binding.clMain.transitionToStart()
         binding.clMain.transitionToEnd()
     }
-
 }

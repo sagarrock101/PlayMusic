@@ -24,7 +24,7 @@ import com.sagaRock101.playmusic.utils.Utils
 import timber.log.Timber
 import java.io.InputStream
 
-class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarChangeListener,
+class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarChangeListener,
     View.OnClickListener, MotionLayout.TransitionListener {
     private var bgLayoutColor: Int? = null
     private var audioVisualizer: BlobVisualizer? = null
@@ -36,6 +36,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
     lateinit var song: Song
     private lateinit var onBackPressedListener: OnBackPressedListener
     private var palette: Palette? = null
+    private var landScapeFlag = false
     private var seekBarRunnable: Runnable = object : Runnable {
         override fun run() {
             if (mediaPlayer != null) {
@@ -52,6 +53,8 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
     override fun getLayoutId() = R.layout.fragment_player
 
     override fun initFragmentImpl() {
+        if(landScapeFlag)
+            getMotionLayout().loadLayoutDescription(R.xml.fragment_player_xml_cl_player_scene_land)
         binding.song = song
         binding.btnPlay.setOnClickListener(this)
         binding.btnBack.setOnClickListener(this)
@@ -280,5 +283,11 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarC
 
     fun resetPlayer() {
         mediaPlayer?.let { it.reset() }
+    }
+
+    fun getMotionLayout() = binding.clPlayer
+
+    fun setLandScapeFlag(landScapeFlag: Boolean) {
+        this.landScapeFlag = landScapeFlag
     }
 }

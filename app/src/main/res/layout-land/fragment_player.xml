@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
-        app:layoutDescription="@xml/fragment_player_xml_cl_player_scene">
+        app:layoutDescription="@xml/fragment_player_xml_cl_player_scene_land">
 
 
         <androidx.constraintlayout.widget.Guideline
@@ -21,8 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="1"
-            />
+            app:layout_constraintGuide_percent="1" />
 
         <View
             android:id="@+id/view_bg_2"
@@ -163,9 +162,10 @@
             android:layout_marginTop="12dp"
             android:text="@{song.artist}"
             android:textColor="@color/colorBlack"
-            android:textSize="28sp"
+            android:textSize="24sp"
             android:textStyle="bold"
             android:ellipsize="end"
+            android:gravity="center_horizontal"
             app:layout_constraintBottom_toTopOf="@+id/seek_bar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -183,7 +183,7 @@
             android:gravity="center_horizontal"
             android:text="@{song.title}"
             android:textColor="@color/colorBlack"
-            android:textSize="24sp"
+            android:textSize="28sp"
             android:textStyle="bold"
             android:ellipsize="end"
             app:layout_constraintEnd_toEndOf="parent"

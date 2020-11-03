@@ -15,10 +15,10 @@ import com.sagaRock101.playmusic.ui.fragment.PlayerFragment
 import com.sagaRock101.playmusic.ui.interfaces.OnBackPressedListener
 import com.sagaRock101.playmusic.ui.interfaces.OnSongItemClickedListener
 import com.sagaRock101.playmusic.utils.Utils
-import kotlinx.android.synthetic.main.fragment_player.*
 
 
 class MainActivity : AppCompatActivity(), OnBackPressedListener, OnSongItemClickedListener  {
+    private var motionLayoutStateFlag: Boolean = false
     private var playerFragment: PlayerFragment? = null
     private lateinit var binding: ActivityMainBinding
     private lateinit var sharedPrefFile: String
@@ -34,14 +34,16 @@ class MainActivity : AppCompatActivity(), OnBackPressedListener, OnSongItemClick
         addFragment(ParentTabFragment().apply {
             listener = this@MainActivity
         })
+        if(savedInstanceState != null) {
+            this.playerFragment = supportFragmentManager.getFragment(savedInstanceState, "player") as PlayerFragment
+            motionLayoutStateFlag = savedInstanceState?.getBoolean("motion_layout_state")
+        }
         val currentOrientation = resources.configuration.orientation
         if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-            // Landscape
-//            Utils.showToast(this, "landscape")
-//            playerFragment?.setLandScapeFlag(true)
+            playerFragment?.let {
+                playerFragment?.setMotionLayoutTransFlag(motionLayoutStateFlag)
+            }
         } else {
-            // Portrait
-//            Utils.showToast(this, "potrait")
         }
     }
 
@@ -97,4 +99,18 @@ class MainActivity : AppCompatActivity(), OnBackPressedListener, OnSongItemClick
         binding.clMain.transitionToStart()
         binding.clMain.transitionToEnd()
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState?.run {
+            supportFragmentManager.putFragment(outState, "player", playerFragment!!)
+            putBoolean("motion_layout_state", checkMotionLayoutState())
+        }
+        super.onSaveInstanceState(outState)
+    }
+
+    private fun checkMotionLayoutState(): Boolean {
+       return playerFragment?.getMotionLayout()?.currentState == R.id.expanded
+    }
+
+
 }

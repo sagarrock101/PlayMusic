@@ -15,7 +15,6 @@
         android:background="@android:color/transparent"
         app:layoutDescription="@xml/fragment_player_xml_cl_player_scene">
 
-
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/horizontal_base_guideline"
             android:layout_width="wrap_content"

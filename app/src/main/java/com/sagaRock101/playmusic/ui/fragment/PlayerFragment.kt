@@ -30,7 +30,7 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
     private var audioVisualizer: BlobVisualizer? = null
     private lateinit var seekBar: SeekBar
     private var mediaPlayer: MediaPlayer? = null
-
+    private var transFlag: Boolean = false
     private val seekBarHandler = Handler()
     private var audioVisualizerColor: Int? = null
     lateinit var song: Song
@@ -53,12 +53,12 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
     override fun getLayoutId() = R.layout.fragment_player
 
     override fun initFragmentImpl() {
-        if(landScapeFlag)
-            getMotionLayout().loadLayoutDescription(R.xml.fragment_player_xml_cl_player_scene_land)
         binding.song = song
         binding.btnPlay.setOnClickListener(this)
         binding.btnBack.setOnClickListener(this)
         binding.clPlayer.addTransitionListener(this)
+        binding.ivBackward.setOnClickListener(this)
+        binding.ivForward.setOnClickListener(this)
         var bitmap = generateBitmap(song)
         if (bitmap != null)
             createPalette(bitmap)
@@ -67,6 +67,8 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
         startPlayer()
         initSeekBar()
         initVisualizer()
+        if(transFlag)
+            makeTransitionToExpanded()
         retainInstance = true
     }
 
@@ -187,7 +189,7 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
     }
 
     override fun onPause() {
-        seekBarHandler.removeCallbacks(seekBarRunnable)
+//        seekBarHandler.removeCallbacks(seekBarRunnable)
         super.onPause()
     }
 
@@ -211,6 +213,12 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
             binding.btnBack -> {
                 makeTransitionToCollapse()
             }
+            binding.ivBackward -> {
+
+            }
+            binding.ivForward -> {
+
+            }
         }
     }
 
@@ -220,6 +228,10 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
 
     fun makeTransitionToExpanded() {
         binding.clPlayer.transitionToEnd()
+    }
+
+    fun setMotionLayoutTransFlag(transFlag: Boolean) {
+        this.transFlag = transFlag
     }
 
     private fun createPaletteSync(bitmap: Bitmap): Palette = Palette.from(bitmap).generate()
@@ -289,5 +301,9 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
 
     fun setLandScapeFlag(landScapeFlag: Boolean) {
         this.landScapeFlag = landScapeFlag
+    }
+
+    fun notifyDataSetChanged() {
+
     }
 }

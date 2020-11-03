@@ -69,6 +69,8 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
         initVisualizer()
         if(transFlag)
             makeTransitionToExpanded()
+        else
+            makeTransitionToCollapse()
         retainInstance = true
     }
 

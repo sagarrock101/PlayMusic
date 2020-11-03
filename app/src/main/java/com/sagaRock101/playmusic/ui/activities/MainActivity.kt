@@ -44,6 +44,9 @@ class MainActivity : AppCompatActivity(), OnBackPressedListener, OnSongItemClick
                 playerFragment?.setMotionLayoutTransFlag(motionLayoutStateFlag)
             }
         } else {
+            playerFragment?.let {
+                playerFragment?.setMotionLayoutTransFlag(motionLayoutStateFlag)
+            }
         }
     }
 

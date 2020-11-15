@@ -1,4 +1,4 @@
-package com.sagaRock101.playmusic.ui.interfaces
+package com.sagaRock101.playmusic.interfaces
 
 import com.sagaRock101.playmusic.model.Song
 

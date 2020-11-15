@@ -11,16 +11,17 @@ import com.sagaRock101.playmusic.R
 import com.sagaRock101.playmusic.databinding.FragmentListOfSongsBinding
 import com.sagaRock101.playmusic.model.Song
 import com.sagaRock101.playmusic.ui.adapter.SongAdapter
-import com.sagaRock101.playmusic.ui.interfaces.OnSongItemClickedListener
+import com.sagaRock101.playmusic.interfaces.OnSongItemClickedListener
 import com.sagaRock101.playmusic.viewModel.MyViewModelFactory
 import com.sagaRock101.playmusic.viewModel.SongViewModel
+import javax.inject.Inject
 
 class ListOfSongsFragment : BaseFragment<FragmentListOfSongsBinding>() {
     val MY_PERMISSION_REQUEST = 1
     val TAG = this.javaClass.name
 
+    @Inject
     lateinit var viewModel: SongViewModel
-
 
     private var adapter = SongAdapter()
 
@@ -28,7 +29,7 @@ class ListOfSongsFragment : BaseFragment<FragmentListOfSongsBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, MyViewModelFactory(activity?.application!!)).get(SongViewModel::class.java)
+//        viewModel = ViewModelProvider(this, MyViewModelFactory(activity?.application!!)).get(SongViewModel::class.java)
 
         if (ContextCompat.checkSelfPermission(
                 requireContext()!!,

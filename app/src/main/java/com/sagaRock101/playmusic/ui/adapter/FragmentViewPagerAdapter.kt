@@ -3,7 +3,7 @@ package com.sagaRock101.playmusic.ui.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.sagaRock101.playmusic.ui.fragment.ListOfSongsFragment
-import com.sagaRock101.playmusic.ui.interfaces.OnSongItemClickedListener
+import com.sagaRock101.playmusic.interfaces.OnSongItemClickedListener
 
 class FragmentViewPagerAdapter(fm: FragmentManager, var listener: OnSongItemClickedListener?) : SmartFragmentStatePagerAdapter(fm) {
     //TODO: need to refactor

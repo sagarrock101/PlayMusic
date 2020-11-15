@@ -1,13 +1,22 @@
 package com.sagaRock101.playmusic.ui.fragment
 
 import android.annotation.SuppressLint
+import android.content.ComponentName
 import android.content.Context
 import android.graphics.Bitmap
 import android.media.AudioAttributes
+import android.media.AudioManager
 import android.media.MediaPlayer
+import android.media.session.PlaybackState
 import android.net.Uri
+import android.os.Bundle
 import android.os.Handler
 import android.provider.MediaStore
+import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.MediaControllerCompat
+import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import android.view.View
 import android.widget.Button
 import android.widget.SeekBar
@@ -19,13 +28,17 @@ import com.gauravk.audiovisualizer.visualizer.BlobVisualizer
 import com.sagaRock101.playmusic.R
 import com.sagaRock101.playmusic.databinding.FragmentPlayerBinding
 import com.sagaRock101.playmusic.model.Song
-import com.sagaRock101.playmusic.ui.interfaces.OnBackPressedListener
+import com.sagaRock101.playmusic.interfaces.OnBackPressedListener
+import com.sagaRock101.playmusic.interfaces.PlayerControlsListener
+import com.sagaRock101.playmusic.service.MediaPlaybackService
 import com.sagaRock101.playmusic.utils.Utils
 import timber.log.Timber
 import java.io.InputStream
 
 class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarChangeListener,
     View.OnClickListener, MotionLayout.TransitionListener {
+    private lateinit var mediaController: MediaControllerCompat
+    private var volumeControlStream: Int = 0
     private var bgLayoutColor: Int? = null
     private var audioVisualizer: BlobVisualizer? = null
     private lateinit var seekBar: SeekBar
@@ -37,6 +50,52 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
     private lateinit var onBackPressedListener: OnBackPressedListener
     private var palette: Palette? = null
     private var landScapeFlag = false
+    private lateinit var playerControlsListener: PlayerControlsListener
+    private lateinit var mediaBrowser: MediaBrowserCompat
+
+    private var controllerCallback = object : MediaControllerCompat.Callback() {
+
+        override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
+
+        }
+
+        override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
+
+        }
+
+        override fun onQueueChanged(queue: MutableList<MediaSessionCompat.QueueItem>?) {
+
+        }
+
+        override fun onSessionDestroyed() {
+
+        }
+    }
+
+    private val connectionCallbacks = object : MediaBrowserCompat.ConnectionCallback() {
+        override fun onConnected() {
+            mediaBrowser.sessionToken.also { token ->
+                 mediaController = MediaControllerCompat(
+                    requireActivity(),
+                    token
+                )
+
+                Utils.showToast(requireContext(), "$token")
+                MediaControllerCompat.setMediaController(requireActivity(), mediaController)
+            }
+//            mediaController.registerCallback(controllerCallback)
+        }
+
+        override fun onConnectionSuspended() {
+
+        }
+
+        override fun onConnectionFailed() {
+
+        }
+
+    }
+
     private var seekBarRunnable: Runnable = object : Runnable {
         override fun run() {
             if (mediaPlayer != null) {
@@ -48,6 +107,10 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
             }
             seekBarHandler.postDelayed(this, 50)
         }
+    }
+
+    fun setPlayerControlListener(listener: PlayerControlsListener) {
+        playerControlsListener = listener
     }
 
     override fun getLayoutId() = R.layout.fragment_player
@@ -67,11 +130,38 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
         startPlayer()
         initSeekBar()
         initVisualizer()
-        if(transFlag)
+        if (transFlag)
             makeTransitionToExpanded()
         else
             makeTransitionToCollapse()
         retainInstance = true
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mediaBrowser = MediaBrowserCompat(
+            requireContext(),
+            ComponentName(requireContext(), MediaPlaybackService::class.java),
+            connectionCallbacks,
+            null
+        )
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mediaBrowser.connect()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        volumeControlStream = AudioManager.STREAM_MUSIC
+    }
+
+    override fun onStop() {
+        super.onStop()
+        MediaControllerCompat.getMediaController(requireActivity())
+            .unregisterCallback(controllerCallback)
+        mediaBrowser.disconnect()
     }
 
     fun setSongData(song: Song, itemPosition: Int) {
@@ -166,7 +256,6 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
         seekBar.max = totalDuration!!
         seekBar.setOnSeekBarChangeListener(this)
         seekBarHandler.postDelayed(seekBarRunnable, 0)
-
     }
 
     override fun onDestroy() {
@@ -191,19 +280,25 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
     }
 
     override fun onPause() {
-//        seekBarHandler.removeCallbacks(seekBarRunnable)
+        seekBarHandler.removeCallbacks(seekBarRunnable)
         super.onPause()
     }
 
     private fun updatePlayButtonWhenPlayBtnPressed(v: View) {
         if (v !is Button)
             return
-        if (mediaPlayer!!.isPlaying) {
+
+        val playBackState = mediaController?.playbackState.state
+        if (playBackState == PlaybackState.STATE_PLAYING) {
             v.setBackgroundResource(R.drawable.ic_play)
-            mediaPlayer?.pause()
+//            mediaPlayer?.pause()
+//            playerControlsListener.onPlayerStop()
+            mediaController?.transportControls.pause()
         } else {
             v.setBackgroundResource(R.drawable.ic_pause_button)
-            mediaPlayer?.start()
+            mediaController?.transportControls.play()
+//            mediaPlayer?.start()
+//            playerControlsListener.onPlay()
         }
     }
 
@@ -230,6 +325,7 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
 
     fun makeTransitionToExpanded() {
         binding.clPlayer.transitionToEnd()
+        changeNavBarStatusBarColor()
     }
 
     fun setMotionLayoutTransFlag(transFlag: Boolean) {
@@ -277,17 +373,22 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
                 navigationBarColor = Utils.getColor(context, R.color.colorPrimaryDark)
                 statusBarColor = Utils.getColor(context, R.color.colorPrimaryDark)
             }
+            transFlag = false
         }
     }
 
     override fun onTransitionCompleted(motionLayout: MotionLayout?, state: Int) {
         if (state == R.id.expanded) {
             if (bgLayoutColor != null) {
-                (activity as AppCompatActivity).window.apply {
-                    navigationBarColor = bgLayoutColor!!
-                    statusBarColor = bgLayoutColor!!
-                }
+                changeNavBarStatusBarColor()
             }
+        }
+    }
+
+    private fun changeNavBarStatusBarColor() {
+        (activity as AppCompatActivity).window.apply {
+            navigationBarColor = bgLayoutColor!!
+            statusBarColor = bgLayoutColor!!
         }
     }
 
@@ -303,9 +404,5 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
 
     fun setLandScapeFlag(landScapeFlag: Boolean) {
         this.landScapeFlag = landScapeFlag
-    }
-
-    fun notifyDataSetChanged() {
-
     }
 }

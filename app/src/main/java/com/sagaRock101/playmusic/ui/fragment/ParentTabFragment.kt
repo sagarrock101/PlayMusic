@@ -1,12 +1,10 @@
 package com.sagaRock101.playmusic.ui.fragment
 
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import com.sagaRock101.playmusic.R
 import com.sagaRock101.playmusic.databinding.FragmentParentTabBinding
-import com.sagaRock101.playmusic.model.Song
 import com.sagaRock101.playmusic.ui.adapter.FragmentViewPagerAdapter
-import com.sagaRock101.playmusic.ui.interfaces.OnSongItemClickedListener
+import com.sagaRock101.playmusic.interfaces.OnSongItemClickedListener
 
 class ParentTabFragment : BaseFragment<FragmentParentTabBinding>() {
 

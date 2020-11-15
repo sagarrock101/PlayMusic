@@ -4,6 +4,9 @@ import android.content.ContentUris
 import android.database.Cursor
 import android.os.Parcelable
 import android.provider.MediaStore
+import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaDescriptionCompat
+import com.sagaRock101.playmusic.utils.Utils.getAlbumArtUri
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -33,5 +36,16 @@ data class Song(
                     .toString()
             )
         }
+    }
+
+    fun toMediaItem(): MediaBrowserCompat.MediaItem {
+        return MediaBrowserCompat.MediaItem(
+            MediaDescriptionCompat.Builder()
+                .setMediaId(id.toString())
+                .setTitle(title)
+                .setIconUri(getAlbumArtUri(albumId))
+                .setSubtitle(artist)
+                .build(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+        )
     }
 }

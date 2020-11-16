@@ -1,5 +1,6 @@
 package com.sagaRock101.playmusic.repo
 
+import android.app.Application
 import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
@@ -7,13 +8,14 @@ import android.provider.MediaStore
 import android.util.Log
 import com.sagaRock101.playmusic.model.Song
 import com.sagaRock101.playmusic.utils.toList
+import javax.inject.Inject
 
 const val TAG = "MusicRepo"
 interface SongsRepo {
     fun getSongs(): List<Song>
 }
 
-class SongsRepoImpl(context: Context) : SongsRepo {
+class SongsRepoImpl @Inject constructor(context: Application) : SongsRepo {
     var contentResolver: ContentResolver = context.contentResolver
 
     override fun getSongs(): List<Song> {

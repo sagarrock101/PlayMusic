@@ -75,6 +75,7 @@ class ListOfSongsFragment : BaseFragment<FragmentListOfSongsBinding>() {
 
     private fun navigateToPlayer(song: Song, position: Int) {
         listener.startPlayer(song, position)
+        viewModel.mediaItemClicked(song.toMediaItem(), null)
 //        val action = ParentTabFragmentDirections.actionParentTabFragmentToPlayerFragment()
 //        action.song = song
 //        findNavController().navigate(action)

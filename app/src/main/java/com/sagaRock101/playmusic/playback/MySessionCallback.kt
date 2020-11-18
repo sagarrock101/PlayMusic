@@ -7,6 +7,7 @@ import android.util.Log
 import com.sagaRock101.playmusic.player.SlidPlayer
 import com.sagaRock101.playmusic.repo.SongsRepo
 import com.sagaRock101.playmusic.repo.SongsRepoImpl
+import com.sagaRock101.playmusic.utils.toMediaId
 
 class MySessionCallback(
     private val mediaSession: MediaSessionCompat,
@@ -22,7 +23,7 @@ class MySessionCallback(
     }
 
     override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
-        super.onPlayFromMediaId(mediaId, extras)
+        var songId = mediaId?.toMediaId()
     }
 
     override fun onPause() {

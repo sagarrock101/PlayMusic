@@ -37,7 +37,7 @@ import java.io.InputStream
 
 class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarChangeListener,
     View.OnClickListener, MotionLayout.TransitionListener {
-    private lateinit var mediaController: MediaControllerCompat
+//    private lateinit var mediaController: MediaControllerCompat
     private var volumeControlStream: Int = 0
     private var bgLayoutColor: Int? = null
     private var audioVisualizer: BlobVisualizer? = null
@@ -51,50 +51,50 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
     private var palette: Palette? = null
     private var landScapeFlag = false
     private lateinit var playerControlsListener: PlayerControlsListener
-    private lateinit var mediaBrowser: MediaBrowserCompat
+//    private lateinit var mediaBrowser: MediaBrowserCompat
 
-    private var controllerCallback = object : MediaControllerCompat.Callback() {
+//    private var controllerCallback = object : MediaControllerCompat.Callback() {
+//
+//        override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
+//
+//        }
+//
+//        override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
+//
+//        }
+//
+//        override fun onQueueChanged(queue: MutableList<MediaSessionCompat.QueueItem>?) {
+//
+//        }
+//
+//        override fun onSessionDestroyed() {
+//
+//        }
+//    }
 
-        override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
-
-        }
-
-        override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
-
-        }
-
-        override fun onQueueChanged(queue: MutableList<MediaSessionCompat.QueueItem>?) {
-
-        }
-
-        override fun onSessionDestroyed() {
-
-        }
-    }
-
-    private val connectionCallbacks = object : MediaBrowserCompat.ConnectionCallback() {
-        override fun onConnected() {
-            mediaBrowser.sessionToken.also { token ->
-                 mediaController = MediaControllerCompat(
-                    requireActivity(),
-                    token
-                )
-
-                Utils.showToast(requireContext(), "$token")
-                MediaControllerCompat.setMediaController(requireActivity(), mediaController)
-            }
-//            mediaController.registerCallback(controllerCallback)
-        }
-
-        override fun onConnectionSuspended() {
-
-        }
-
-        override fun onConnectionFailed() {
-
-        }
-
-    }
+//    private val connectionCallbacks = object : MediaBrowserCompat.ConnectionCallback() {
+//        override fun onConnected() {
+//            mediaBrowser.sessionToken.also { token ->
+//                 mediaController = MediaControllerCompat(
+//                    requireActivity(),
+//                    token
+//                )
+//
+//                Utils.showToast(requireContext(), "$token")
+//                MediaControllerCompat.setMediaController(requireActivity(), mediaController)
+//            }
+////            mediaController.registerCallback(controllerCallback)
+//        }
+//
+//        override fun onConnectionSuspended() {
+//
+//        }
+//
+//        override fun onConnectionFailed() {
+//
+//        }
+//
+//    }
 
     private var seekBarRunnable: Runnable = object : Runnable {
         override fun run() {
@@ -127,9 +127,9 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
             createPalette(bitmap)
         setAlbumArtColor()
         setLayoutBackgroundColor()
-        startPlayer()
-        initSeekBar()
-        initVisualizer()
+//        startPlayer()
+//        initSeekBar()
+//        initVisualizer()
         if (transFlag)
             makeTransitionToExpanded()
         else
@@ -139,17 +139,17 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mediaBrowser = MediaBrowserCompat(
-            requireContext(),
-            ComponentName(requireContext(), MediaPlaybackService::class.java),
-            connectionCallbacks,
-            null
-        )
+//        mediaBrowser = MediaBrowserCompat(
+//            requireContext(),
+//            ComponentName(requireContext(), MediaPlaybackService::class.java),
+//            connectionCallbacks,
+//            null
+//        )
     }
 
     override fun onStart() {
         super.onStart()
-        mediaBrowser.connect()
+//        mediaBrowser.connect()
     }
 
     override fun onResume() {
@@ -159,9 +159,9 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
 
     override fun onStop() {
         super.onStop()
-        MediaControllerCompat.getMediaController(requireActivity())
-            .unregisterCallback(controllerCallback)
-        mediaBrowser.disconnect()
+//        MediaControllerCompat.getMediaController(requireActivity())
+//            .unregisterCallback(controllerCallback)
+//        mediaBrowser.disconnect()
     }
 
     fun setSongData(song: Song, itemPosition: Int) {
@@ -237,7 +237,7 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
             mediaPlayer?.apply {
                 setDataSource(requireContext(), songUri)
                 prepare()
-                start()
+//                start()
             }
         } catch (e: Exception) {
             releaseVisualizer()
@@ -287,18 +287,12 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
     private fun updatePlayButtonWhenPlayBtnPressed(v: View) {
         if (v !is Button)
             return
-
-        val playBackState = mediaController?.playbackState.state
-        if (playBackState == PlaybackState.STATE_PLAYING) {
+        if (mediaPlayer!!.isPlaying) {
             v.setBackgroundResource(R.drawable.ic_play)
 //            mediaPlayer?.pause()
-//            playerControlsListener.onPlayerStop()
-            mediaController?.transportControls.pause()
         } else {
             v.setBackgroundResource(R.drawable.ic_pause_button)
-            mediaController?.transportControls.play()
 //            mediaPlayer?.start()
-//            playerControlsListener.onPlay()
         }
     }
 

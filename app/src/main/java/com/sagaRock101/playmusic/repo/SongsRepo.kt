@@ -2,7 +2,6 @@ package com.sagaRock101.playmusic.repo
 
 import android.app.Application
 import android.content.ContentResolver
-import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
 import android.util.Log
@@ -11,11 +10,14 @@ import com.sagaRock101.playmusic.utils.toList
 import javax.inject.Inject
 
 const val TAG = "MusicRepo"
+
 interface SongsRepo {
     fun getSongs(): List<Song>
+    fun getSong(id: Long): Song
 }
 
 class SongsRepoImpl @Inject constructor(context: Application) : SongsRepo {
+
     var contentResolver: ContentResolver = context.contentResolver
 
     override fun getSongs(): List<Song> {
@@ -24,10 +26,19 @@ class SongsRepoImpl @Inject constructor(context: Application) : SongsRepo {
         }
     }
 
+    override fun getSong(id: Long): Song {
+        val cursor = buildCursor(id.toString())
+        cursor.use {
+            return if (it!!.moveToFirst())
+                Song.createFromCursor(it)
+            else Song()
+        }
+    }
+
     private fun readMusic() {
         var cursor = buildCursor()
 
-        if (cursor != null && cursor.moveToFirst() ) {
+        if (cursor != null && cursor.moveToFirst()) {
             var songTitle = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)
 
             do {
@@ -39,11 +50,11 @@ class SongsRepoImpl @Inject constructor(context: Application) : SongsRepo {
         cursor!!.close()
     }
 
-    private fun buildCursor(): Cursor? {
+    private fun buildCursor(selection: String? = ""): Cursor? {
         val selectionStatement = StringBuilder("is_music=1 AND title != ''")
-//        if (!selection.isNullOrEmpty()) {
-//            selectionStatement.append(" AND $selection")
-//        }
+        if (!selection.isNullOrEmpty()) {
+            selectionStatement.append(" AND $selection")
+        }
         val projection = arrayOf(
             "_id",
             "title",
@@ -61,10 +72,9 @@ class SongsRepoImpl @Inject constructor(context: Application) : SongsRepo {
             projection,
             selectionStatement.toString(),
             null,
-        MediaStore.Audio.Media.TITLE)
+            MediaStore.Audio.Media.TITLE
+        )
             ?: throw IllegalStateException("Unable to query ${MediaStore.Audio.Media.EXTERNAL_CONTENT_URI}, system returned null.")
     }
-
-
 
 }

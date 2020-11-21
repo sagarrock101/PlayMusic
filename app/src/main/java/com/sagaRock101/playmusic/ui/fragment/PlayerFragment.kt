@@ -23,17 +23,22 @@ import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.Observer
 import androidx.palette.graphics.Palette
 import com.gauravk.audiovisualizer.visualizer.BlobVisualizer
+import com.sagaRock101.playmusic.MyApplication
 import com.sagaRock101.playmusic.R
 import com.sagaRock101.playmusic.databinding.FragmentPlayerBinding
 import com.sagaRock101.playmusic.model.Song
 import com.sagaRock101.playmusic.interfaces.OnBackPressedListener
 import com.sagaRock101.playmusic.interfaces.PlayerControlsListener
+import com.sagaRock101.playmusic.model.MediaItemData
 import com.sagaRock101.playmusic.service.MediaPlaybackService
+import com.sagaRock101.playmusic.ui.viewModel.PlayerViewModel
 import com.sagaRock101.playmusic.utils.Utils
 import timber.log.Timber
 import java.io.InputStream
+import javax.inject.Inject
 
 class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarChangeListener,
     View.OnClickListener, MotionLayout.TransitionListener {
@@ -51,6 +56,9 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
     private var palette: Palette? = null
     private var landScapeFlag = false
     private lateinit var playerControlsListener: PlayerControlsListener
+
+    @Inject
+    lateinit var playerViewModel: PlayerViewModel
 //    private lateinit var mediaBrowser: MediaBrowserCompat
 
 //    private var controllerCallback = object : MediaControllerCompat.Callback() {
@@ -116,17 +124,25 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
     override fun getLayoutId() = R.layout.fragment_player
 
     override fun initFragmentImpl() {
-        binding.song = song
+//        binding.song = song
         binding.btnPlay.setOnClickListener(this)
         binding.btnBack.setOnClickListener(this)
         binding.clPlayer.addTransitionListener(this)
         binding.ivBackward.setOnClickListener(this)
         binding.ivForward.setOnClickListener(this)
-        var bitmap = generateBitmap(song)
-        if (bitmap != null)
-            createPalette(bitmap)
-        setAlbumArtColor()
-        setLayoutBackgroundColor()
+        seekBar = binding.seekBar
+        playerViewModel.currentLD.observe(this, Observer{mediaItemData ->
+            if(seekBar.max == 100) {
+                seekBar.max = mediaItemData.duration
+            }
+            var bitmap = generateBitmap(mediaItemData)
+            if (bitmap != null)
+                createPalette(bitmap)
+            setAlbumArtColor()
+            setLayoutBackgroundColor()
+        })
+
+
 //        startPlayer()
 //        initSeekBar()
 //        initVisualizer()
@@ -168,9 +184,9 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
         this.song = song
     }
 
-    private fun generateBitmap(song: Song?): Bitmap? {
+    private fun generateBitmap(mediaItemData: MediaItemData?): Bitmap? {
         var stream: InputStream? = null
-        var albumArtUri: Uri = Utils.getAlbumArtUri(song!!.albumId)
+        var albumArtUri: Uri = Utils.getAlbumArtUri(mediaItemData!!.albumId)
         try {
             stream = this.requireContext().contentResolver.openInputStream(albumArtUri)
         } catch (e: Exception) {
@@ -252,10 +268,10 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
 
     private fun initSeekBar() {
         seekBar = binding.seekBar
-        var totalDuration = mediaPlayer?.duration?.div(1000)
-        seekBar.max = totalDuration!!
-        seekBar.setOnSeekBarChangeListener(this)
-        seekBarHandler.postDelayed(seekBarRunnable, 0)
+//        var totalDuration = mediaPlayer?.duration?.div(1000)
+//        seekBar.max = totalDuration!!
+//        seekBar.setOnSeekBarChangeListener(this)
+//        seekBarHandler.postDelayed(seekBarRunnable, 0)
     }
 
     override fun onDestroy() {
@@ -287,13 +303,13 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
     private fun updatePlayButtonWhenPlayBtnPressed(v: View) {
         if (v !is Button)
             return
-        if (mediaPlayer!!.isPlaying) {
-            v.setBackgroundResource(R.drawable.ic_play)
-//            mediaPlayer?.pause()
-        } else {
-            v.setBackgroundResource(R.drawable.ic_pause_button)
-//            mediaPlayer?.start()
-        }
+//        if (mediaPlayer!!.isPlaying) {
+//            v.setBackgroundResource(R.drawable.ic_play)
+////            mediaPlayer?.pause()
+//        } else {
+//            v.setBackgroundResource(R.drawable.ic_pause_button)
+////            mediaPlayer?.start()
+//        }
     }
 
     override fun onClick(v: View?) {
@@ -348,6 +364,7 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
         super.onAttach(context)
         if (context is OnBackPressedListener)
             onBackPressedListener = context
+        (requireActivity()!!.application as MyApplication).appComponent.inject(this)
     }
 
     override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
@@ -399,4 +416,6 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
     fun setLandScapeFlag(landScapeFlag: Boolean) {
         this.landScapeFlag = landScapeFlag
     }
+
+
 }

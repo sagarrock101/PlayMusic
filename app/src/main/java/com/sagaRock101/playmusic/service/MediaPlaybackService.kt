@@ -34,6 +34,7 @@ class MediaPlaybackService : MediaBrowserServiceCompat() {
         super.onCreate()
         (application as MyApplication).appComponent.inject(this)
         noisyReceiver = NoisyReceiver(this, slidPlayer.getSession().sessionToken)
+        sessionToken = slidPlayer.getSession().sessionToken
     }
 
     override fun onLoadChildren(

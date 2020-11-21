@@ -1,4 +1,4 @@
-package com.sagaRock101.playmusic.viewModel
+package com.sagaRock101.playmusic.ui.viewModel
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
@@ -14,7 +14,7 @@ class MyViewModelFactory @Inject constructor(
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SongViewModel::class.java)) {
-            return SongViewModel(application) as T
+            return SongViewModel(application, playBackConnection) as T
         }
         if (modelClass.isAssignableFrom(PlayerViewModel::class.java)) {
             return PlayerViewModel(playBackConnection) as T

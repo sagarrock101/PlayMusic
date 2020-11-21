@@ -5,15 +5,13 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.sagaRock101.playmusic.MyApplication
 import com.sagaRock101.playmusic.R
 import com.sagaRock101.playmusic.databinding.FragmentListOfSongsBinding
 import com.sagaRock101.playmusic.model.Song
 import com.sagaRock101.playmusic.ui.adapter.SongAdapter
 import com.sagaRock101.playmusic.interfaces.OnSongItemClickedListener
-import com.sagaRock101.playmusic.viewModel.MyViewModelFactory
-import com.sagaRock101.playmusic.viewModel.SongViewModel
+import com.sagaRock101.playmusic.ui.viewModel.SongViewModel
 import javax.inject.Inject
 
 class ListOfSongsFragment : BaseFragment<FragmentListOfSongsBinding>() {

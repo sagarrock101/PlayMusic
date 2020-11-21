@@ -22,32 +22,31 @@ class AppModule {
 
     @Provides
     fun provideRepositoryImpl(application: Application): SongsRepo {
-        this.application = application
         return SongsRepoImpl(application)
     }
 
     @Provides
-    fun provideSlidMusicPlayer(): SlidMusicPlayer {
-        return SlidMusicPlayerImpl(application!!)
+    fun provideSlidMusicPlayer(application: Application): SlidMusicPlayer {
+        return SlidMusicPlayerImpl(application)
     }
 
     @Provides
-    fun provideSlidPlayer(): SlidPlayer {
+    fun provideSlidPlayer(application: Application): SlidPlayer {
         return SlidPlayerImpl(
             application!!,
-            provideSlidMusicPlayer(),
+            provideSlidMusicPlayer(application),
             provideRepositoryImpl(application!!)
         )
     }
 
     @Provides
-    fun provideServiceComponentName(): ComponentName {
-        return ComponentName(application!!, MediaPlaybackService::class.java)
+    fun provideServiceComponentName(application: Application): ComponentName {
+        return ComponentName(application, MediaPlaybackService::class.java)
     }
 
     @Provides
-    fun providePlaybackConnectionImpl(): PlayBackConnection {
-        return PlaybackConnectionImp(application!!, provideServiceComponentName())
+    fun providePlaybackConnectionImpl(application: Application): PlayBackConnection {
+        return PlaybackConnectionImp(application, provideServiceComponentName(application))
     }
 
 }

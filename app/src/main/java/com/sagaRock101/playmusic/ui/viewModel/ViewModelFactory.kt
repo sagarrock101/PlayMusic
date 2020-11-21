@@ -1,4 +1,4 @@
-package com.sagaRock101.playmusic.viewModel
+package com.sagaRock101.playmusic.ui.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

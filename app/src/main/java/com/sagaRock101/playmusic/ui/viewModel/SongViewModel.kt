@@ -1,4 +1,4 @@
-package com.sagaRock101.playmusic.viewModel
+package com.sagaRock101.playmusic.ui.viewModel
 
 import android.app.Application
 import android.os.Bundle
@@ -8,7 +8,6 @@ import androidx.lifecycle.MutableLiveData
 import com.sagaRock101.playmusic.model.Song
 import com.sagaRock101.playmusic.playback.PlayBackConnection
 import com.sagaRock101.playmusic.repo.SongsRepo
-import com.sagaRock101.playmusic.repo.SongsRepoImpl
 import com.sagaRock101.playmusic.utils.CoroutineViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
@@ -44,5 +43,7 @@ class SongViewModel @Inject constructor(
     fun mediaItemClicked(mediaItem: MediaBrowserCompat.MediaItem, extras: Bundle?) {
         playBackConnection.transportControls?.playFromMediaId(mediaItem.mediaId, null)
     }
+
+
 
 }

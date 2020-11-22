@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.sagaRock101.playmusic.di.module.AppModule
 import com.sagaRock101.playmusic.service.MediaPlaybackService
+import com.sagaRock101.playmusic.ui.activities.MainActivity
 import com.sagaRock101.playmusic.ui.fragment.ListOfSongsFragment
 import com.sagaRock101.playmusic.ui.fragment.ParentTabFragment
 import com.sagaRock101.playmusic.ui.fragment.PlayerFragment
@@ -23,4 +24,5 @@ interface AppComponent {
     fun inject(fragment: ListOfSongsFragment)
     fun inject(service: MediaPlaybackService)
     fun inject(playerFragment: PlayerFragment)
+    fun inject(mainActivity: MainActivity)
 }

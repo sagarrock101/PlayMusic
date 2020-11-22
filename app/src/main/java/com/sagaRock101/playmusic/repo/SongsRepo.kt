@@ -27,7 +27,7 @@ class SongsRepoImpl @Inject constructor(context: Application) : SongsRepo {
     }
 
     override fun getSong(id: Long): Song {
-        val cursor = buildCursor(id.toString())
+        val cursor = buildCursor("_id=$id")
         cursor.use {
             return if (it!!.moveToFirst())
                 Song.createFromCursor(it)

@@ -8,7 +8,9 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import timber.log.Timber
 import javax.inject.Inject
 
 val NONE_PLAYBACK_STATE: PlaybackStateCompat = PlaybackStateCompat.Builder()
@@ -76,8 +78,9 @@ class PlaybackConnectionImp @Inject constructor(
 
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
             metadata ?: return
-            lastPlayed.postValue(nowPlaying?.value ?: NONE_PLAYING_STATE)
+            Timber.e("${metadata}")
             nowPlaying.postValue(metadata)
+            lastPlayed.postValue(nowPlaying?.value ?: NONE_PLAYING_STATE)
         }
 
         override fun onQueueChanged(queue: MutableList<MediaSessionCompat.QueueItem>?) {

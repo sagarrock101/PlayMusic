@@ -1,6 +1,7 @@
 package com.sagaRock101.playmusic.player
 
 import android.app.Application
+import android.media.session.PlaybackState
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -8,7 +9,9 @@ import com.sagaRock101.playmusic.R
 import com.sagaRock101.playmusic.model.Song
 import com.sagaRock101.playmusic.playback.MySessionCallback
 import com.sagaRock101.playmusic.repo.SongsRepo
+import com.sagaRock101.playmusic.utils.OnPlayerPlaying
 import com.sagaRock101.playmusic.utils.Utils
+import com.sagaRock101.playmusic.utils.isPlaying
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -18,6 +21,7 @@ interface SlidPlayer {
     fun pauseSong()
     fun getSession(): MediaSessionCompat
     fun updatePlaybackState(action: PlaybackStateCompat.Builder.() -> Unit)
+    fun onPlayerPlaying(onPlayerPlaying: OnPlayerPlaying)
 }
 
 class SlidPlayerImpl @Inject constructor(
@@ -25,6 +29,7 @@ class SlidPlayerImpl @Inject constructor(
     private val player: SlidMusicPlayer,
     private val songsRepo: SongsRepo
 ) : SlidPlayer {
+    private var onPlayerPlaying: OnPlayerPlaying = {}
     private var metadataBuilder = MediaMetadataCompat.Builder()
     private var stateBuilder = createDefaultPlaybackState()
     private var mediaSession =
@@ -45,16 +50,17 @@ class SlidPlayerImpl @Inject constructor(
     }
 
     override fun playSong(songId: String?) {
-        val song = songId?.toLong()?.let { songsRepo.getSong(it) }
-        song?.path?.let {
-            player.setSource(Utils.getSongUri(songId?.toLong()))
-            player.prepare()
-        }
-        Timber.e("${song?.artist}")
+        val song = songsRepo.getSong(songId!!.toLong())
+        setMetaData(song)
         updatePlaybackState {
             setState(mediaSession.controller.playbackState.state, 0, 1F)
         }
-        setMetaData(song)
+        player.setSource(Utils.getSongUri(songId?.toLong()))
+        player.prepare()
+        updatePlaybackState {
+            setState(PlaybackStateCompat.STATE_PLAYING, 0, 1f)
+        }
+        player.onPlay()
         playSong()
 //        player.onPlay()
     }
@@ -76,7 +82,7 @@ class SlidPlayerImpl @Inject constructor(
     }
 
     override fun playSong() {
-        player.onPlay()
+
     }
 
     override fun pauseSong() {
@@ -90,8 +96,19 @@ class SlidPlayerImpl @Inject constructor(
         setPlaybackState(stateBuilder.build())
     }
 
-    private fun setPlaybackState(state: PlaybackStateCompat?) {
-        mediaSession.setPlaybackState(state)
+    override fun onPlayerPlaying(onPlayerPlaying: OnPlayerPlaying) {
+        this.onPlayerPlaying = onPlayerPlaying
+    }
+
+    private fun setPlaybackState(playbackStateCompat: PlaybackStateCompat?) {
+        mediaSession.setPlaybackState(playbackStateCompat)
+        if(playbackStateCompat!!.isPlaying) {
+            Timber.e("playing")
+            onPlayerPlaying.invoke(true)
+        } else {
+            Timber.e("Not playing")
+            onPlayerPlaying.invoke(false)
+        }
     }
 
 

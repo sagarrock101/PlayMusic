@@ -23,13 +23,12 @@ class MySessionCallback(
     }
 
     override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
-        Timber.e(this.javaClass.simpleName, "$mediaId")
-
         var songId = mediaId?.toMediaId()
         mediaPlayer.playSong(mediaId)
     }
 
     override fun onPause() {
+        Timber.e(this.javaClass.simpleName, " onPause")
         mediaPlayer?.pauseSong()
     }
 

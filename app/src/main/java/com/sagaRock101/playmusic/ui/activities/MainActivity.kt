@@ -11,6 +11,8 @@ import android.support.v4.media.session.MediaSessionCompat
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import com.sagaRock101.playmusic.MyApplication
 import com.sagaRock101.playmusic.R
 import com.sagaRock101.playmusic.databinding.ActivityMainBinding
 import com.sagaRock101.playmusic.model.Song
@@ -19,7 +21,11 @@ import com.sagaRock101.playmusic.ui.fragment.PlayerFragment
 import com.sagaRock101.playmusic.interfaces.OnBackPressedListener
 import com.sagaRock101.playmusic.interfaces.OnSongItemClickedListener
 import com.sagaRock101.playmusic.interfaces.PlayerControlsListener
+import com.sagaRock101.playmusic.ui.viewModel.PlayerViewModel
+import com.sagaRock101.playmusic.utils.CoroutineViewModel
 import com.sagaRock101.playmusic.utils.Utils
+import timber.log.Timber
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), OnBackPressedListener, OnSongItemClickedListener,
     PlayerControlsListener {
@@ -35,8 +41,11 @@ class MainActivity : AppCompatActivity(), OnBackPressedListener, OnSongItemClick
     private val NAV_BAR_COLOR = "nav_bar_color"
     private lateinit var mediaString: MediaSessionCompat
 
+    @Inject
+    lateinit var playerViewModel: PlayerViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        (application as MyApplication).appComponent.inject(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         setupSharedPref()
         addNavigationBarColorToSharedPref()
@@ -59,6 +68,18 @@ class MainActivity : AppCompatActivity(), OnBackPressedListener, OnSongItemClick
             }
         }
         createNotificationChannel()
+
+        playerViewModel.currentLD.observe(this, Observer{ mediaItemData ->
+            playerFragment?.setUiFromMetaData(mediaItemData)
+//            if(seekBar.max == 100) {
+//                seekBar.max = mediaItemData.duration
+//            }
+//            var bitmap = generateBitmap(mediaItemData)
+//            if (bitmap != null)
+//                createPalette(bitmap)
+//            setAlbumArtColor()
+//            setLayoutBackgroundColor()
+        })
     }
 
     private fun addFragment(fragment: Fragment) {

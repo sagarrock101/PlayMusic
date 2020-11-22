@@ -17,6 +17,7 @@ interface SlidMusicPlayer {
     fun prepare()
     fun seekTo(position: Int)
     fun release()
+    fun getAudioSessionId(): Int
 }
 
 @Singleton
@@ -66,6 +67,8 @@ class SlidMusicPlayerImpl @Inject constructor(val context: Application) : SlidMu
     override fun release() {
         mediaPlayer?.release()
     }
+
+    override fun getAudioSessionId() = mediaPlayer.audioSessionId
 
     private fun createPlayer(): MediaPlayer? {
         return MediaPlayer().apply {

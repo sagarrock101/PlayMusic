@@ -7,6 +7,8 @@ import android.content.IntentFilter
 import android.media.AudioManager
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
+import com.sagaRock101.playmusic.utils.Utils
+import timber.log.Timber
 
 class NoisyReceiver(
     private val context: Context,
@@ -34,6 +36,7 @@ class NoisyReceiver(
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
+            Utils.showToast(context, "${intent.action.toString()}")
             controller.transportControls.pause()
         }
     }

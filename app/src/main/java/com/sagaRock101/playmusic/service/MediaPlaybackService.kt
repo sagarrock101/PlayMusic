@@ -5,7 +5,6 @@ import android.support.v4.media.MediaBrowserCompat
 import androidx.media.MediaBrowserServiceCompat
 import com.sagaRock101.playmusic.MyApplication
 import com.sagaRock101.playmusic.broadCastReceiver.NoisyReceiver
-import com.sagaRock101.playmusic.player.SlidMusicPlayer
 import com.sagaRock101.playmusic.player.SlidPlayer
 import com.sagaRock101.playmusic.repo.SongsRepo
 import com.sagaRock101.playmusic.utils.toMediaItemList
@@ -13,6 +12,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 private const val MY_MEDIA_ROOT_ID = "media_root_id"
@@ -35,6 +35,13 @@ class MediaPlaybackService : MediaBrowserServiceCompat() {
         (application as MyApplication).appComponent.inject(this)
         noisyReceiver = NoisyReceiver(this, slidPlayer.getSession().sessionToken)
         sessionToken = slidPlayer.getSession().sessionToken
+        slidPlayer.onPlayerPlaying { isPlaying ->
+            Timber.e("$isPlaying")
+            if(isPlaying)
+                noisyReceiver.register()
+            else
+                noisyReceiver.unregister()
+        }
     }
 
     override fun onLoadChildren(

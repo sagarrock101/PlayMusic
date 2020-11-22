@@ -131,15 +131,9 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
         binding.ivBackward.setOnClickListener(this)
         binding.ivForward.setOnClickListener(this)
         seekBar = binding.seekBar
-        playerViewModel.currentLD.observe(this, Observer{mediaItemData ->
-            if(seekBar.max == 100) {
-                seekBar.max = mediaItemData.duration
-            }
-            var bitmap = generateBitmap(mediaItemData)
-            if (bitmap != null)
-                createPalette(bitmap)
-            setAlbumArtColor()
-            setLayoutBackgroundColor()
+        playerViewModel.currentLD.observe(requireActivity(), Observer{ mediaItemData ->
+            Timber.e("${mediaItemData.artist}")
+
         })
 
 
@@ -153,19 +147,17 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
         retainInstance = true
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//        mediaBrowser = MediaBrowserCompat(
-//            requireContext(),
-//            ComponentName(requireContext(), MediaPlaybackService::class.java),
-//            connectionCallbacks,
-//            null
-//        )
-    }
-
-    override fun onStart() {
-        super.onStart()
-//        mediaBrowser.connect()
+    fun setUiFromMetaData(mediaItemData: MediaItemData?) {
+        mediaItemData ?: return
+        if(seekBar.max == 100) {
+            seekBar.max = mediaItemData.duration
+        }
+        var bitmap = generateBitmap(mediaItemData)
+        if (bitmap != null)
+            createPalette(bitmap)
+        initVisualizer()
+        setAlbumArtColor()
+        setLayoutBackgroundColor()
     }
 
     override fun onResume() {
@@ -226,12 +218,12 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
 //        if (audioVisualizer == null) {
         try {
             audioVisualizer = binding.audioVisualizer
-            var audioSession = mediaPlayer!!.audioSessionId
+            var audioSession = playerViewModel.audioSessionId
             if (audioSession != -1)
                 audioVisualizer?.setAudioSessionId(audioSession)
             audioVisualizer?.setColor(getAudioVisualizerColor())
         } catch (e: Exception) {
-
+            Timber.e("${e.message}")
         }
 //        }
     }

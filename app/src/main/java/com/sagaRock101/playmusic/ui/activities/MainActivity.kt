@@ -48,8 +48,8 @@ class MainActivity : AppCompatActivity(), OnBackPressedListener, OnSongItemClick
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         setupSharedPref()
         addNavigationBarColorToSharedPref()
-        playerFragment = PlayerFragment()
-        addFragment(playerFragment!!, binding.flContainer.id)
+//        playerFragment = PlayerFragment()
+//        addFragment(playerFragment!!, binding.flContainer.id)
         addFragment(ParentTabFragment().apply {
             listener = this@MainActivity
         }, binding.flTabs.id)

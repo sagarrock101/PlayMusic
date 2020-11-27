@@ -128,16 +128,16 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
     override fun getLayoutId() = R.layout.fragment_player
 
     override fun initFragmentImpl() {
-//        binding.song = song
+        binding.song = song
         binding.btnPlay.setOnClickListener(this)
         binding.btnBack.setOnClickListener(this)
         binding.clPlayer.addTransitionListener(this)
         binding.ivBackward.setOnClickListener(this)
         binding.ivForward.setOnClickListener(this)
         seekBar = binding.seekBar
-//        startPlayer()
+        startPlayer()
 //        initSeekBar()
-//        initVisualizer()
+        initVisualizer()
         if (transFlag)
             makeTransitionToExpanded()
         else
@@ -149,24 +149,24 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
         super.onViewCreated(view, savedInstanceState)
         playerViewModel.currentLD.observe(viewLifecycleOwner, Observer{ mediaItemData ->
             Timber.e("${mediaItemData.artist}")
-            setUiFromMetaData(mediaItemData)
+//            setUiFromMetaData(mediaItemData)
         })
     }
 
     fun setUiFromMetaData(mediaItemData: MediaItemData?) {
-        mediaItemData ?: return
-        binding.song = mediaItemData
-        if(seekBar.max == 100) {
-            seekBar.max = mediaItemData.duration
-        }
-        var bitmap = generateBitmap(mediaItemData)
-        if (bitmap != null)
-            createPalette(bitmap)
-        Handler(Looper.getMainLooper()).postDelayed({
-            initVisualizer()
-        }, 1000)
-        setAlbumArtColor()
-        setLayoutBackgroundColor()
+//        mediaItemData ?: return
+//        binding.song = mediaItemData
+//        if(seekBar.max == 100) {
+//            seekBar.max = mediaItemData.duration
+//        }
+//        var bitmap = generateBitmap(mediaItemData)
+//        if (bitmap != null)
+//            createPalette(bitmap)
+//        Handler(Looper.getMainLooper()).postDelayed({
+//            initVisualizer()
+//        }, 1000)
+//        setAlbumArtColor()
+//        setLayoutBackgroundColor()
     }
 
     override fun onResume() {
@@ -228,9 +228,9 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
         try {
             audioVisualizer = binding.audioVisualizer
 //            releaseVisualizer()
-            var audioSession = playerViewModel.getAudioSessionId()
+            var audioSession = mediaPlayer?.audioSessionId
             if (audioSession != -1)
-                audioVisualizer?.setAudioSessionId(audioSession)
+                audioVisualizer?.setAudioSessionId(audioSession!!)
             audioVisualizer?.setColor(getAudioVisualizerColor())
         } catch (e: Exception) {
 //            releaseVisualizer()

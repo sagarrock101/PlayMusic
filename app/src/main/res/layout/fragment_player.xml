@@ -5,7 +5,7 @@
     <data>
         <variable
             name="song"
-            type="com.sagaRock101.playmusic.model.Song" />
+            type="com.sagaRock101.playmusic.model.MediaItemData" />
     </data>
 
     <com.sagaRock101.playmusic.utils.SingleViewTouchableMotionLayout
@@ -139,6 +139,8 @@
             app:layout_constraintEnd_toEndOf="@id/iv_album_art"
             app:layout_constraintStart_toStartOf="@id/iv_album_art"
             app:layout_constraintTop_toTopOf="@id/iv_album_art" />
+
+
 
         <ImageView
             android:id="@+id/iv_album_art"

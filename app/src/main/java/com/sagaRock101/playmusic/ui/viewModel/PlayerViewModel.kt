@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 class PlayerViewModel @Inject constructor(
     playBackConnection: PlayBackConnection,
-     slidMusicPlayer: SlidMusicPlayer
+    var slidMusicPlayer: SlidMusicPlayer
 ) : CoroutineViewModel(Main) {
 
     private val playingMediaData = Observer<MediaMetadataCompat> { mediaMetaData ->
@@ -24,7 +24,6 @@ class PlayerViewModel @Inject constructor(
     private val currentDataMLD = MutableLiveData<MediaItemData>()
     val currentLD: LiveData<MediaItemData> = currentDataMLD
 
-    val audioSessionId = slidMusicPlayer.getAudioSessionId()
 
     private val playBackConnection = playBackConnection.also {
         it.nowPlaying.observeForever(playingMediaData)
@@ -35,6 +34,6 @@ class PlayerViewModel @Inject constructor(
         playBackConnection.nowPlaying.removeObserver(playingMediaData)
     }
 
-
+    fun getAudioSessionId() = slidMusicPlayer.getAudioSessionId()
 
 }

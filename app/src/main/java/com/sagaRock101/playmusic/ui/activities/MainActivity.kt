@@ -8,6 +8,7 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.media.session.MediaSessionCompat
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -41,17 +42,17 @@ class MainActivity : AppCompatActivity(), OnBackPressedListener, OnSongItemClick
     private val NAV_BAR_COLOR = "nav_bar_color"
     private lateinit var mediaString: MediaSessionCompat
 
-    @Inject
-    lateinit var playerViewModel: PlayerViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (application as MyApplication).appComponent.inject(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         setupSharedPref()
         addNavigationBarColorToSharedPref()
+        playerFragment = PlayerFragment()
+        addFragment(playerFragment!!, binding.flContainer.id)
         addFragment(ParentTabFragment().apply {
             listener = this@MainActivity
-        })
+        }, binding.flTabs.id)
         if (savedInstanceState != null) {
             this.playerFragment =
                 supportFragmentManager.getFragment(savedInstanceState, "player") as PlayerFragment
@@ -69,21 +70,10 @@ class MainActivity : AppCompatActivity(), OnBackPressedListener, OnSongItemClick
         }
         createNotificationChannel()
 
-        playerViewModel.currentLD.observe(this, Observer{ mediaItemData ->
-            playerFragment?.setUiFromMetaData(mediaItemData)
-//            if(seekBar.max == 100) {
-//                seekBar.max = mediaItemData.duration
-//            }
-//            var bitmap = generateBitmap(mediaItemData)
-//            if (bitmap != null)
-//                createPalette(bitmap)
-//            setAlbumArtColor()
-//            setLayoutBackgroundColor()
-        })
     }
 
-    private fun addFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().replace(binding.flTabs.id, fragment)
+    private fun addFragment(fragment: Fragment, flId: Int) {
+        supportFragmentManager.beginTransaction().replace(flId, fragment)
             .commit()
     }
 

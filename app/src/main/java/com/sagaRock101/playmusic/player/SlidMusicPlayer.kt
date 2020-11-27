@@ -5,6 +5,7 @@ import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.PowerManager
+import androidx.lifecycle.MutableLiveData
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -18,16 +19,20 @@ interface SlidMusicPlayer {
     fun seekTo(position: Int)
     fun release()
     fun getAudioSessionId(): Int
+    val playerStarted: MutableLiveData<Boolean>
 }
 
 @Singleton
-class SlidMusicPlayerImpl @Inject constructor(val context: Application) : SlidMusicPlayer {
+class SlidMusicPlayerImpl @Inject constructor(
+    val context: Application
+) : SlidMusicPlayer {
     val TAG = this.javaClass.simpleName
+    override val playerStarted: MutableLiveData<Boolean> = MutableLiveData()
 
     private var mediaPlayerBase: MediaPlayer? = null
     private val mediaPlayer: MediaPlayer
         get() {
-            if(mediaPlayerBase == null) {
+            if (mediaPlayerBase == null) {
                 mediaPlayerBase = createPlayer()
             }
             return mediaPlayerBase ?: throw IllegalStateException("Impossible")
@@ -35,6 +40,7 @@ class SlidMusicPlayerImpl @Inject constructor(val context: Application) : SlidMu
 
     override fun onPlay() {
         mediaPlayer.start()
+        playerStarted.postValue(true)
     }
 
     override fun onPause() {
@@ -51,7 +57,7 @@ class SlidMusicPlayerImpl @Inject constructor(val context: Application) : SlidMu
 
     override fun setSource(uri: Uri) {
         try {
-            mediaPlayer?.setDataSource(this.context, uri)
+            mediaPlayer?.setDataSource(context, uri)
         } catch (e: Exception) {
             Timber.e("${e.message}")
         }

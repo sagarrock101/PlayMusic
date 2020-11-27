@@ -11,6 +11,7 @@ import android.media.session.PlaybackState
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -25,6 +26,8 @@ import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.palette.graphics.Palette
+import com.chibde.visualizer.CircleBarVisualizer
+import com.gauravk.audiovisualizer.visualizer.BlastVisualizer
 import com.gauravk.audiovisualizer.visualizer.BlobVisualizer
 import com.sagaRock101.playmusic.MyApplication
 import com.sagaRock101.playmusic.R
@@ -38,6 +41,7 @@ import com.sagaRock101.playmusic.ui.viewModel.PlayerViewModel
 import com.sagaRock101.playmusic.utils.Utils
 import timber.log.Timber
 import java.io.InputStream
+import java.sql.Blob
 import javax.inject.Inject
 
 class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBarChangeListener,
@@ -131,12 +135,6 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
         binding.ivBackward.setOnClickListener(this)
         binding.ivForward.setOnClickListener(this)
         seekBar = binding.seekBar
-        playerViewModel.currentLD.observe(requireActivity(), Observer{ mediaItemData ->
-            Timber.e("${mediaItemData.artist}")
-
-        })
-
-
 //        startPlayer()
 //        initSeekBar()
 //        initVisualizer()
@@ -147,15 +145,26 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
         retainInstance = true
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        playerViewModel.currentLD.observe(viewLifecycleOwner, Observer{ mediaItemData ->
+            Timber.e("${mediaItemData.artist}")
+            setUiFromMetaData(mediaItemData)
+        })
+    }
+
     fun setUiFromMetaData(mediaItemData: MediaItemData?) {
         mediaItemData ?: return
+        binding.song = mediaItemData
         if(seekBar.max == 100) {
             seekBar.max = mediaItemData.duration
         }
         var bitmap = generateBitmap(mediaItemData)
         if (bitmap != null)
             createPalette(bitmap)
-        initVisualizer()
+        Handler(Looper.getMainLooper()).postDelayed({
+            initVisualizer()
+        }, 1000)
         setAlbumArtColor()
         setLayoutBackgroundColor()
     }
@@ -218,14 +227,15 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
 //        if (audioVisualizer == null) {
         try {
             audioVisualizer = binding.audioVisualizer
-            var audioSession = playerViewModel.audioSessionId
+//            releaseVisualizer()
+            var audioSession = playerViewModel.getAudioSessionId()
             if (audioSession != -1)
                 audioVisualizer?.setAudioSessionId(audioSession)
             audioVisualizer?.setColor(getAudioVisualizerColor())
         } catch (e: Exception) {
-            Timber.e("${e.message}")
-        }
+//            releaseVisualizer()
 //        }
+        }
     }
 
     private fun startPlayer() {
@@ -245,7 +255,7 @@ class PlayerFragment() : BaseFragment<FragmentPlayerBinding>(), SeekBar.OnSeekBa
             mediaPlayer?.apply {
                 setDataSource(requireContext(), songUri)
                 prepare()
-//                start()
+                start()
             }
         } catch (e: Exception) {
             releaseVisualizer()
